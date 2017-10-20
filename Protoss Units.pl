@@ -1,0 +1,42 @@
+prop(probe, mineral, 100).
+prop(probe, gas, 0).
+prop(probe, armour, 0).
+prop(probe, hp, 20).
+prop(probe, shield, 20).
+prop(probe, race, protoss).
+prop(probe, attributeModifier, [light,mechanical]).
+prop(probe, groundAttack, 5).
+prop(probe, bonusAttack, 0).
+prop(probe, bonusType, []).
+prop(probe, coolDown, 1.07).
+prop(probe, range, 0).
+prop(probe, speed, 3.94).
+
+prop(zealot, mineral, 100).
+prop(zealot, gas, 0).
+prop(zealot, armour, 1).
+prop(zealot, hp, 100).
+prop(zealot, shield, 50).
+prop(zealot, race, protoss).
+prop(zealot, attributeModifier, [light,biological]).
+prop(zealot, groundAttack, 16).
+prop(zealot, bonusAttack, 0).
+prop(zealot, bonusType, []).
+prop(zealot, coolDown, 0.86).
+prop(zealot, range, 0).
+prop(zealot, speed, 3.15).
+
+prop(sentry, mineral, 50).
+prop(sentry, gas, 100).
+prop(sentry, armour, 1).
+prop(sentry, hp, 40).
+prop(sentry, shield, 40).
+prop(sentry, race, protoss).
+prop(sentry, attributeModifier, [light,mechanical,psionic]).
+prop(sentry, groundAttack, 6).
+prop(sentry, bonusAttack, 0).
+prop(sentry, bonusType, []).
+prop(sentry, coolDown, 0.71).
+prop(sentry, range, 5).
+prop(sentry, speed, 3.15).
+

@@ -1,9 +1,19 @@
-
+% Knowledgebase using Triple
+%
+% Properties we are keeping
+% - Mineral
+% - Gas
+% - Armor
+% - Hp
+% - Shield
+% - AttributeModifier
+% -
+%
+prop(zealot, armour, 100).
 prop(zealot, mineral, 100).
 prop(zealot, gas, 100).
 prop(zealot, hp, 100).
 prop(zealot, shield, 100).
-prop(zealot, armour, 100).
 prop(zealot, groundAttack, 100).
 prop(zealot, bonusAttack, 100).
 prop(zealot, bonusType, 100).
@@ -12,9 +22,9 @@ prop(zealot, attributeModifier, 100).
 prop(zealot, range, 100).
 
 %% U is the enemies unit.
-%% Inspect will give back: 
-%% Mineral, 
-%% Gas, 
+%% Inspect will give back:
+%% Mineral,
+%% Gas,
 %% Shield, (0 if unit has no sheilds)
 %% Armour,
 %% GroundAttack,
@@ -130,27 +140,27 @@ inspect(U, Mineral, Gas, HP, Shield, Armour, GroundAttack, BonusAttack, BonusTyp
 
 
 %% counter (
-%% 	Get info about enemies unit 
-%% 	Relevant info: Mineral, Gas, HP, Shields, Armour, Groundattack, BonusAttack, BonusType(s),Cooldown, Range
+%%	Get info about enemies unit
+%%	Relevant info: Mineral, Gas, HP, Shields, Armour, Groundattack, BonusAttack, BonusType(s),Cooldown, Range
 
-%% 	L = Get possible units for us from race and ???
-%% 	R1 = List of names of the unit
-%% 	R2 = resources left after battle of unit
+%%	L = Get possible units for us from race and ???
+%%	R1 = List of names of the unit
+%%	R2 = resources left after battle of unit
 
-%% 	damageCalculation(L, R1, R2) :-
-%% 		Head do calculation put result in R.
-
-
-%% 		BR  = battle result of this units damage calculation
-%% 		R is our result list which will have the unit and its total resources after battle
-%% 		resource effiecieny calculation(BR, R)
-%% 		H how many units we have left = ceiling(HP total of our units after battle/hp of one unit)
-%% 		H*cost of one unit = total resources after battle.
-
-%% 		damageCalculation(T,R)
+%%	damageCalculation(L, R1, R2) :-
+%%		Head do calculation put result in R.
 
 
-%% 	find highest resources left(R).
+%%		BR  = battle result of this units damage calculation
+%%		R is our result list which will have the unit and its total resources after battle
+%%		resource effiecieny calculation(BR, R)
+%%		H how many units we have left = ceiling(HP total of our units after battle/hp of one unit)
+%%		H*cost of one unit = total resources after battle.
+
+%%		damageCalculation(T,R)
+
+
+%%	find highest resources left(R).
 
 %% )
 

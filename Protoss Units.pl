@@ -53,3 +53,17 @@ prop(stalker, bonusType, [armoured]).
 prop(stalker, coolDown, 1.03).
 prop(stalker, range, 6).
 prop(stalker, speed, 4.13).
+
+prop(adept, mineral, 100).
+prop(adept, gas, 25).
+prop(adept, armour, 1).
+prop(adept, hp, 70).
+prop(adept, shield, 70).
+prop(adept, race, protoss).
+prop(adept, attributeModifier, [light,biological]).
+prop(adept, groundAttack, 10).
+prop(adept, bonusAttack, 12).
+prop(adept, bonusType, [light]).
+prop(adept, coolDown, 1.61).
+prop(adept, range, 4).
+prop(adept, speed, 3.5).

@@ -17,7 +17,20 @@
 % damage calculation
 % # of unit * ( (basic attack + bonus) / cooldown ) = Total dps
 
-% U is the enemies unit.
+% Unit is the enemies unit you wish to fight
+% NumberOfUnits is the number of the enemy's unit
+% MinAvailable is how minerals you can spend on your army
+% GasAvailable is much gas you can spend on your army
+% Race is your Race, it will restrict what units you can build
+% R is the result, a list of units with their resource effiecieny
+
+
+counter(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, R) :-
+	inspect(Unit, EMineral, EGas, EHP, EShield, EArmour, EGroundAttack, EBonusAttack, EBonusType, ECoolDown, ERange),
+	inspectRace(R, L).
+
+
+%% U is the enemies unit.
 %% Inspect will give back:
 %% Mineral,
 %% Gas,
@@ -34,6 +47,55 @@
 % armour(U, Armour), groundAttack(U,GroundAttack)
 % bonusAttack(U,BonusAttack), bonusType(U, BonusType), coolDown(U,
 % CoolDown), range(U, Range).
+
+inspect(U, Mineral, Gas, HP, Shield, Armour, GroundAttack, BonusAttack, BonusType, CoolDown, Range) :-
+	prop(U, mineral, Mineral),
+	prop(U, gas, Gas),
+	prop(U, hp, HP),
+	prop(U, shield, Shield),
+	prop(U, armour, Armour),
+	prop(U, groundAttack, GroundAttack),
+	prop(U, bonusAttack, BonusAttack),
+	prop(U, bonusType, BonusType),
+	prop(U, coolDown, CoolDown),
+	prop(U, range, Range).
+
+
+
+%% R is a race (Protoss, Zerg, Terran)
+%% L is a list of units this race can make that are in our KB
+
+inspectRace(R, L) :-
+	findall(X0, prop(X0, race, R), L).
+
+
+
+%% MaxBuild is true if R is GA / GPU.
+%% If GPU is 0 give -1.
+maxBuild(_,0,-1).
+maxBuild(GA,GPU,R) :-
+	R is GA / GPU.
+
+%% SpecialMin is true when R is min of X and Y. Except -1 is max.
+specialMin(-1, Y, Y).
+specialMin(X, -1, X).
+specialMin(X, Y, R) :-
+	dif(X, -1),
+	dif(Y, -1),
+	R is min(X,Y).
+
+
+%% U is unit to build.
+%% MinAvailable is the minerals available
+%% GasAvailable is the gas available
+%% UnitsBuilt is the number of unit U built from recourses given
+builtUnits(U, MinAvailable, GasAvailable, UnitsBuilt) :-
+	prop(U, gas, GasPerUnit),
+	prop(U, mineral, MineralsPerUnit),
+	maxBuild(GasAvailable, GasPerUnit, GasMax),
+	maxBuild(MinAvailable, MineralsPerUnit, MineralMax),
+	specialMin(GasMax, MineralMax, UnitsBuilt).
+
 
 %% counter (
 %%	Get info about enemies unit
@@ -60,12 +122,29 @@
 
 %% )
 
+%% Before battle calculation we have list L of units we can build
+%% Foreach unit in L
+%% Build max number of units
+%% Do damageCalculation against enemies units (lots of smaller parts/functions)
+%% Record results
+
+%% The result of the battle calculation is a list L where each element in L is units name and total hp left after battle
+
+
+%% After doing each unit and getting results calculate resource effiecieny based on units left and this units cost.
+
 %% Taking into account Range:
 %% They get extra number of attacks based on how much higher the unit's range is compared to it's opponents.
 %% # of units*attack = bonus damage from range.
 %% At beginning of fight subtract bonus damage from range from enemy with lowers range total hp pool.
 
 %% (Basic attack + bonus atk - armour)/CD * number of units is DPS.
+
+
+
+
+
+
 
 
 

@@ -40,3 +40,16 @@ prop(sentry, coolDown, 0.71).
 prop(sentry, range, 5).
 prop(sentry, speed, 3.15).
 
+prop(stalker, mineral, 125).
+prop(stalker, gas, 50).
+prop(stalker, armour, 1).
+prop(stalker, hp, 80).
+prop(stalker, shield, 80).
+prop(stalker, race, protoss).
+prop(stalker, attributeModifier, [armoured,mechanical]).
+prop(stalker, groundAttack, 10).
+prop(stalker, bonusAttack, 4).
+prop(stalker, bonusType, [armoured]).
+prop(stalker, coolDown, 1.03).
+prop(stalker, range, 6).
+prop(stalker, speed, 4.13).

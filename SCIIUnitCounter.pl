@@ -289,17 +289,21 @@ defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), Def
 %% Subtract total damage
 %% Setup new frontline unit
 %% Unit count down by one
+%% Tests:
+%% defend(1000, zealot, (100,50),100,(NewHP, NewShield), NewLeft). 	Expect: NewHP: 50  NewShield: 0  NewLeft: 94
+%% defend(250, zealot, (100,50),2,(NewHP, NewShield), NewLeft).		Expect: NewHP: 50  NewShield: 0  NewLeft: 1
+%% defend(300, zealot, (100,50),2,(NewHP, NewShield), NewLeft). 	Expect: NewHP: 100 NewShield: 50 NewLeft: 0
 defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, NewDefenderDamagedUnitShield), NewDefenderUnitLeft) :-
 	TempShield is DefenderDamagedUnitShield - Damage,
 	TempShield < 0,
 	NewDamage is Damage - DefenderDamagedUnitShield,
 	TempHP is DefenderDamagedUnitHP - NewDamage,
 	TempHP =< 0,
-	NewDamage is Damage - DefenderDamagedUnitHP,
+	NewNewDamage is NewDamage - DefenderDamagedUnitHP,
 	prop(Defender, shield, FreshShield),
 	prop(Defender, hp, FreshHP),
 	TempUnitLeft is DefenderUnitLeft - 1,
-	defend(NewDamage, Defender, (FreshHP, FreshShield), TempUnitLeft, (NewDefenderDamagedUnitHP, NewDefenderDamagedUnitShield), NewDefenderUnitLeft).
+	defend(NewNewDamage, Defender, (FreshHP, FreshShield), TempUnitLeft, (NewDefenderDamagedUnitHP, NewDefenderDamagedUnitShield), NewDefenderUnitLeft).
 
 	
 

@@ -1,4 +1,4 @@
-prop(probe, mineral, 100).
+prop(probe, mineral, 50).
 prop(probe, gas, 0).
 prop(probe, armour, 0).
 prop(probe, hp, 20).
@@ -222,7 +222,7 @@ rangeChecker(EUnit, Unit, 0, 0) :-
 battleSimulation(EUnit, EUnitLeft, [], MinAvailable, GasAvailable, []).
 battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
 	buildUnits(Unit, MinAvailable, GasAvailable, UnitLeft),
-	
+
 	rangeChecker(Eunit, Unit, ENextHit, NextHit),
 	prop(EUnit, hp, EHP),
 	prop(Unit, hp, HP),
@@ -230,7 +230,6 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
 	prop(Unit, shield, Shield),
 
 	tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, (HP, Shield), (EHP, EShield), R).
-	
 
 
 
@@ -347,9 +346,9 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, NextHit, EDamagedUnit, DamagedUnit, R)
 	tick(EUnit, Unit, EUnitLeft, UnitLeft, X, Y, EDamagedUnit, DamagedUnit, R).
 
 
-
 % damage calculation
 % # of unit * ( (basic attack + bonus) - Earmour / cooldown ) = Total dps
+
 
 %% counter (
 %%	Get info about enemies unit
@@ -396,140 +395,32 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, NextHit, EDamagedUnit, DamagedUnit, R)
 
 
 
-
-
 % Jin Min trying to wrap around his head.
 %
-prop(probe, mineral, 50).
-prop(probe, gas, 0).
-prop(probe, armour, 0).
-prop(probe, hp, 20).
-prop(probe, shield, 20).
-prop(probe, race, protoss).
-prop(probe, attributeModifier, [light,mechanical]).
-prop(probe, groundAttack, 5).
-prop(probe, bonusAttack, 0).
-prop(probe, bonusType, []).
-prop(probe, coolDown, 1.07).
-prop(probe, range, 0).
-prop(probe, speed, 3.94).
-
-prop(zealot, mineral, 100).
-prop(zealot, gas, 0).
-prop(zealot, armour, 1).
-prop(zealot, hp, 100).
-prop(zealot, shield, 50).
-prop(zealot, race, protoss).
-prop(zealot, attributeModifier, [light,biological]).
-prop(zealot, groundAttack, 16).
-prop(zealot, bonusAttack, 0).
-prop(zealot, bonusType, []).
-prop(zealot, coolDown, 0.86).
-prop(zealot, range, 0).
-prop(zealot, speed, 3.15).
-
-prop(sentry, mineral, 50).
-prop(sentry, gas, 100).
-prop(sentry, armour, 1).
-prop(sentry, hp, 40).
-prop(sentry, shield, 40).
-prop(sentry, race, protoss).
-prop(sentry, attributeModifier, [light,mechanical,psionic]).
-prop(sentry, groundAttack, 6).
-prop(sentry, bonusAttack, 0).
-prop(sentry, bonusType, []).
-prop(sentry, coolDown, 0.71).
-prop(sentry, range, 5).
-prop(sentry, speed, 3.15).
-
-prop(stalker, mineral, 125).
-prop(stalker, gas, 50).
-prop(stalker, armour, 1).
-prop(stalker, hp, 80).
-prop(stalker, shield, 80).
-prop(stalker, race, protoss).
-prop(stalker, attributeModifier, [armoured,mechanical]).
-prop(stalker, groundAttack, 10).
-prop(stalker, bonusAttack, 4).
-prop(stalker, bonusType, [armoured]).
-prop(stalker, coolDown, 1.03).
-prop(stalker, range, 6).
-prop(stalker, speed, 4.13).
-
-prop(adept, mineral, 100).
-prop(adept, gas, 25).
-prop(adept, armour, 1).
-prop(adept, hp, 70).
-prop(adept, shield, 70).
-prop(adept, race, protoss).
-prop(adept, attributeModifier, [light,biological]).
-prop(adept, groundAttack, 10).
-prop(adept, bonusAttack, 12).
-prop(adept, bonusType, [light]).
-prop(adept, coolDown, 1.61).
-prop(adept, range, 4).
-prop(adept, speed, 3.5).
-
-prop(darkTemplar, mineral, 125).
-prop(darkTemplar, gas, 125).
-prop(darkTemplar, armour, 1).
-prop(darkTemplar, hp, 40).
-prop(darkTemplar, shield, 80).
-prop(darkTemplar, race, protoss).
-prop(darkTemplar, attributeModifier, [light,biological,psionic]).
-prop(darkTemplar, groundAttack, 10).
-prop(darkTemplar, bonusAttack, 12).
-prop(darkTemplar, bonusType, [light]).
-prop(darkTemplar, coolDown, 1.61).
-prop(darkTemplar, range, 4).
-prop(darkTemplar, speed, 3.5).
-
-prop(immortal, mineral, 250).
-prop(immortal, gas, 100).
-prop(immortal, armour, 1).
-prop(immortal, hp, 200).
-prop(immortal, shield, 100).
-prop(immortal, race, protoss).
-prop(immortal, attributeModifier, [armoured,mechanical]).
-prop(immortal, groundAttack, 20).
-prop(immortal, bonusAttack, 30).
-prop(immortal, bonusType, [armoured]).
-prop(immortal, coolDown, 1.04).
-prop(immortal, range, 6).
-prop(immortal, speed, 3.15).
-
-prop(colossus, mineral, 300).
-prop(colossus, gas, 200).
-prop(colossus, armour, 1).
-prop(colossus, hp, 200).
-prop(colossus, shield, 150).
-prop(colossus, race, protoss).
-prop(colossus, attributeModifier, [armoured,mechanical,massive]).
-prop(colossus, groundAttack, 12).
-prop(colossus, bonusAttack, 0).
-prop(colossus, bonusType, []).
-prop(colossus, coolDown, 1.18).
-prop(colossus, range, 6).
-prop(colossus, speed, 3.15).
-%
-%
-%
-%
-% availableUnits(MinAvailable, GasAvailable, AllUnits, Acc, Result).
+% availableUnits(MinAvailable, GasAvailable, AllUnits, Result).
 % (AllUnits is ListofAllUnits)
 
 availableUnits(_, _,[],L,L).
-availableUnits(MinAvailable, GasAvailable, [H|T],Acc,[H|RT]) :- builtUnits(H, MinAvailable, GasAvailable, N), N>0, availableUnits(MinAvailable, GasAvailable, T, [H|Acc], RT).
-
-% availableUnits(MinAvailable, GasAvailable, [H|T],Acc,[D|RT]) :-
-% dif(H,D), builtUnits(H, MinAvailable, GasAvailable, N), N>0,
+availableUnits(MinAvailable, GasAvailable, [H|T],Acc,[H|RT]) :- buildUnits(H, MinAvailable, GasAvailable, N), N>0, availableUnits(MinAvailable, GasAvailable,T,[H|Acc],RT).
+% availableUnits(MinAvailable, GasAvailable,[H|T],Acc,[D|RT]) :-
+% dif(H,D), buildUnits(H, MinAvailable, GasAvailable, N), N>0,
 % availableUnits(MinAvailable, GasAvailable,T,Acc,RT).
 
-% ?-
-% availableUnits(400,
-% 0, [probe,zealot,sentry,stalker,adept,darkTemplar,immortal,colossus],
-% [], R). (MinAvailable and GasAvailable inputs are availabe on the
-% upper function // I'm passing them as a input now) (400, 0) R =
-% [probe, zealot];
+% ?- % availableUnits(400,0,
+% [probe,zealot,sentry,stalker,adept,darkTemplar,immortal,colossus], [],
+% R). (MinAvailable and GasAvailable inputs are availabe on the upper
+% function // I'm passing them as a input now) (400, 0) R = [probe,
+% zealot];
+
+% Res is 1(true) if the N is greater than 0, meaning can make the Unit.
+availableUnit(Unit, MinAvailable, GasAvailable, Res) :- buildUnits(Unit, MinAvailable, GasAvailable, N), N>0, Res is 1.
+
+% This returns the reversed order and doesn't work with a list including
+% N = 0... Huge bug.
+availableUnits2(_, _, [], L, L).
+availableUnits2(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1), availableUnits2(MinAvailable, GasAvailable, T, [H|Acc], Result).
+
+
+availableUnits22(U, MinAvailable, GasAvailable, L) :- findall(U, buildUnits(U, MinAvailable, GasAvailable, N>0), L).
 
 filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,ListofAllUnits), availableUnits(MinAvailable, GasAvailable, ListofAllUnits, [], Result).

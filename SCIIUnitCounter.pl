@@ -192,7 +192,11 @@ rangeChecker(EUnit, Unit, ENextHit, 0) :-
 	Tick is 0.01,
 	MovePerTick is Speed * Tick,
 	ENextHit is Distance / MovePerTick.
-
+%% Same range
+rangeChecker(EUnit, Unit, 0, 0) :-
+	prop(EUnit, range, ER),
+	prop(Unit, range, R),
+	R = ER.
 
 	%% Take speed of slower unit (LOOK AT NOTES)
 
@@ -219,13 +223,13 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
 
 
 
-tick(Time, ECD, CD, EUnitLeft, UnitLeft, ENextHit, NextHit) :-
 
-
+%% tick(Time, ECD, CD, EUnitLeft, UnitLeft, ENextHit, NextHit) :-
 
 
 % damage calculation
 % # of unit * ( (basic attack + bonus) - Earmour / cooldown ) = Total dps
+
 
 %% counter (
 %%	Get info about enemies unit

@@ -192,7 +192,11 @@ rangeChecker(EUnit, Unit, ENextHit, 0) :-
 	Tick is 0.01,
 	MovePerTick is Speed * Tick,
 	ENextHit is Distance / MovePerTick.
-
+%% Same range
+rangeChecker(EUnit, Unit, 0, 0) :-
+	prop(EUnit, range, ER),
+	prop(Unit, range, R),
+	R = ER.
 
 	%% Take speed of slower unit (LOOK AT NOTES)
 
@@ -219,10 +223,13 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
 
 
 
+<<<<<<< HEAD
+tick(Time, ECD, CD, EUnitLeft, UnitLeft, ENextHit, NextHit) :-
 
-% Mark fixed it so be aware of merge conflict!
-% tick(Time, ECD, CD, EUnitLeft, UnitLeft, ENextHit, NextHit) :-
-
+=======
+%% tick(Time, ECD, CD, EUnitLeft, UnitLeft, ENextHit, NextHit) :-
+	
+>>>>>>> 0c83fde223d92d9cadef38d1089e83c9ba3d85ec
 
 
 

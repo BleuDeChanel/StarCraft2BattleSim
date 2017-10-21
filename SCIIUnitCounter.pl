@@ -221,7 +221,7 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
 
 
 
-tick(Time, ECD, CD, EUnitLeft, UnitLeft, ENextHit, NextHit) :-
+%% tick(Time, ECD, CD, EUnitLeft, UnitLeft, ENextHit, NextHit) :-
 	
 
 

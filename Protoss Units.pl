@@ -1,4 +1,4 @@
-prop(probe, mineral, 100).
+prop(probe, mineral, 50).
 prop(probe, gas, 0).
 prop(probe, armour, 0).
 prop(probe, hp, 20).

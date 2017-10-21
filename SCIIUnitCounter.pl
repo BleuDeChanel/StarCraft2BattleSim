@@ -236,6 +236,8 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
 %% Gets Damage for this attack done by Attacker on Defender
 %% Damage = UnitLeft * ( ( BasicAttack + BonusAttack - EArmour) ).
 %% Add shield armour value.
+%% Tests:
+%% attack(zealot, 500, zealot, D). Expect D = 7500
 attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 	prop(Attacker, groundAttack, BasicAttack),
 	BonusAttack is 0,
@@ -290,9 +292,9 @@ defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), Def
 %% Setup new frontline unit
 %% Unit count down by one
 %% Tests:
-%% defend(1000, zealot, (100,50),100,(NewHP, NewShield), NewLeft). 	Expect: NewHP: 50  NewShield: 0  NewLeft: 94
-%% defend(250, zealot, (100,50),2,(NewHP, NewShield), NewLeft).		Expect: NewHP: 50  NewShield: 0  NewLeft: 1
-%% defend(300, zealot, (100,50),2,(NewHP, NewShield), NewLeft). 	Expect: NewHP: 100 NewShield: 50 NewLeft: 0
+%% defend(1000, zealot, (100,50),100,(NewHP, NewShield), NewLeft). 	Expect: NewHP = 50  NewShield = 0  NewLeft = 94
+%% defend(250, zealot, (100,50),2,(NewHP, NewShield), NewLeft).		Expect: NewHP = 50  NewShield = 0  NewLeft = 1
+%% defend(300, zealot, (100,50),2,(NewHP, NewShield), NewLeft). 	Expect: NewHP = 100 NewShield = 50 NewLeft = 0
 defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, NewDefenderDamagedUnitShield), NewDefenderUnitLeft) :-
 	TempShield is DefenderDamagedUnitShield - Damage,
 	TempShield < 0,
@@ -308,46 +310,85 @@ defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), Def
 	
 
 %% Looking at Tick
-%% 	End of any tick function: NextHit - 0.01.
+%% 	Doesn't tick on 0.01, but jumps to next attack tick after each tick. Keeping track of who attacks next and when.
 %% 	1.
 %% 		Need to keep track of NextHit. 
 %% 		Everytime NextHit hits 0:
 %% 			1. Attack.
 %% 			2. Set NextHit to CD.
+%% tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, DamagedUnit, EDamagedUnit, R)
+%% Eunit - Enemy's Unit
+%% Unit - Your Unit
+%% EUnitLeft - Enemy's units left (Battle is over when at 0)
+%% UnitLeft - Your units left (Battle is over when at 0)
+%% ENextHit - Ticks till enemy can attack (attacks at 0)
+%% NextHit - Ticks till you can attack (attacks at 0)
+%% EDamagedUnit - Enemy's frontline unit, gets hit first and can have non full hp/shield
+%% DamagedUnit - your frontline unit, gets hit first and can have non full hp/shield
+%% R is result of battle, (Unit, TotalHP of your army left)
 
+%% Tests:
+%% tick()
 
-%% No one can hit, advance tick
+%% No one can hit, Jump to next attack. Cases: Enemey is next hit, You're next hit, you both are next hit(same ENextHit and NextHit)
 tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, EDamagedUnit, DamagedUnit, R) :- 
-	dif(ENextHit,0),
-	dif(NextHit,0),
+	EUnitLeft > 0,
+	UnitLeft > 0,
+	ENextHit > 0,
+	NextHit > 0,
+	%% ENextHit < NextHit,
+
 	X is ENextHit - 0.01,
 	Y is NextHit - 0.01,
-	tick(EUnit, Unit, EUnitLeft, UnitLeft, X, Y, EDamagedUnit, DamagedUnit, R).
+	tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, Y, EDamagedUnit, DamagedUnit, R).
+
+%% No Enemies left!!! Record result and exit tick.
+tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, (HP, Shield), (Unit,TotalHP)) :- 
+	EUnitLeft =< 0,
+	UnitLeft > 0,
+	prop(Unit, hp, FullHP),
+	TotalHP is FullHP * UnitLeft + HP.
+
+%% No Units left :( Record result and exit tick.
+tick(_, Unit, _, UnitLeft, _, _, _, _, (Unit,0)) :-
+	UnitLeft =< 0.
 
 %% Unit can hit
-tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, 0, EDamagedUnit, DamagedUnit, R) :- 
+tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, 0, EDamagedUnit, DamagedUnit, R) :-
+	EUnitLeft > 0,
+	UnitLeft > 0,
+	ENextHit > 0,
 	attack(Unit, UnitLeft, EUnit, Damage),
 	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
-
-
-
-
-
-
 	X is ENextHit - 0.01,
-	Y is NextHit - 0.01,
-	tick(EUnit, Unit, NewEUnitLeft, UnitLeft, X, Y, NewEDamageUnit, DamagedUnit, R).
-
-
-
-
+	prop(Unit, coolDown, NewNextHit),
+	tick(EUnit, Unit, NewEUnitLeft, UnitLeft, X, NewNextHit, NewEDamageUnit, DamagedUnit, R).
 
 
 %% Enemy unit can hit
-tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, NextHit, EDamagedUnit, DamagedUnit, R) :- 
-	X is ENextHit - 0.01,
+tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, NextHit, EDamagedUnit, DamagedUnit, R) :-
+	EUnitLeft > 0,
+	UnitLeft > 0,
+	NextHit > 0,
+	attack(EUnit, EUnitLeft, Unit, Damage),
+	defend(Damage, Unit, DamagedUnit, UnitLeft, NewDamageUnit, NewUnitLeft),
+	prop(EUnit, coolDown, NewENextHit),
 	Y is NextHit - 0.01,
-	tick(EUnit, Unit, EUnitLeft, UnitLeft, X, Y, EDamagedUnit, DamagedUnit, R).
+	tick(EUnit, Unit, EUnitLeft, NewUnitLeft, NewENextHit, Y, EDamagedUnit, NewDamageUnit, R).
+
+%% Both units can hit
+%% Both attack with full force.
+%% Then defend.
+tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
+	EUnitLeft > 0,
+	UnitLeft > 0,
+	attack(EUnit, EUnitLeft, Unit, EDamage),
+	attack(Unit, UnitLeft, EUnit, Damage),
+	defend(EDamage, Unit, DamagedUnit, UnitLeft, NewDamageUnit, NewUnitLeft),
+	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
+	prop(EUnit, coolDown, NewENextHit),
+	prop(Unit, coolDown, NewNextHit),
+	tick(EUnit, Unit, NewEUnitLeft, NewUnitLeft, NewENextHit, NewNextHit, NewEDamageUnit, NewDamageUnit, R).
 
 
 % damage calculation

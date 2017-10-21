@@ -96,6 +96,12 @@ prop(adept, speed, 3.5).
 
 
 counter(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, R) :-
+	%% Make sure NumberOfUnits > 0.
+	dif(NumberOfUnits, 0),
+	%% Make sure Minerals are given
+	MinAvailable > 49,
+	%% Make sure Unit is valid.
+	%% Make sure race is valid.
 	inspect(Unit, EMineral, EGas, EHP, EShield, EArmour, EGroundAttack, EBonusAttack, EBonusType, ECoolDown, ERange),
 	inspectRace(R, L),
 	battleSimulation(Unit, NumberOfUnits, L, MinAvailable, GasAvailable, R).
@@ -146,7 +152,7 @@ inspectRace(R, L) :-
 %% If GPU is 0 give -1.
 maxBuild(_,0,-1).
 maxBuild(GA,GPU,R) :-
-	diff(GPU, 0),
+	dif(GPU, 0),
 	R is GA / GPU.
 
 %% SpecialMin is true when R is min of X and Y. Except -1 is max.
@@ -192,6 +198,7 @@ rangeChecker(EUnit, Unit, ENextHit, 0) :-
 	Tick is 0.01,
 	MovePerTick is Speed * Tick,
 	ENextHit is Distance / MovePerTick.
+
 %% Same range
 rangeChecker(EUnit, Unit, 0, 0) :-
 	prop(EUnit, range, ER),
@@ -217,16 +224,127 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
 	buildUnits(Unit, MinAvailable, GasAvailable, UnitLeft),
 	
 	rangeChecker(Eunit, Unit, ENextHit, NextHit),
-	prop(EUnit, coolDown, ECD),
-	prop(Unit, coolDown, CD),
-	tick(0,ECD, CD, EUnitLeft, UnitLeft, ENextHit,NextHit,R).
+	prop(EUnit, hp, EHP),
+	prop(Unit, hp, HP),
+	prop(EUnit, shield, EShield),
+	prop(Unit, shield, Shield),
+
+	tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, (HP, Shield), (EHP, EShield), R).
 	
 
 
 
+%% Gets Damage for this attack done by Attacker on Defender
+%% Damage = UnitLeft * ( ( BasicAttack + BonusAttack - EArmour) ).
+%% Add shield armour value.
+attack(Attacker, AttackerUnitleft, Defender, Damage) :-
+	prop(Attacker, groundAttack, BasicAttack),
+	BonusAttack is 0,
+	prop(Defender, armour, DefenderArmour),
+	SingleAttack is BasicAttack + BonusAttack - DefenderArmour,
+	Damage is AttackerUnitleft * SingleAttack.
 
-%% tick(Time, ECD, CD, EUnitLeft, UnitLeft, ENextHit, NextHit) :-
+
+
+
+%% NOTE: Shield will be added to HP, and use same Armour as it's unit's Armour. 
+%% It should have it's own armour value.
+
+%% 	Looking into Attack 
+%% 		1. Must keep track of UnitsLeft.
+%% 		2. Keep track of one DamagedUnit per side. Damaged unit is (HPLeft, ShieldLeft)
+%% 		3. An attack is 
+%% 			Damage = UnitLeft * ( ( BasicAttack + BonusAttack - EArmour) ).
+%% 			TempHP = EDamagedUnit's HP
+%% 			EDamagedUnit's HP = EDamagedUnit's HP - Damage. If 0, dead. EUnitLeft - 1. EDamagedUnit HP set to full.
+%% 			Damage = Damage - TempHP.
+%% 			Repeat till Damage is 0.
+
+%% Base case
+%% Defender doesn't die. Set the New values. 
+%% Case 1: Shield doesn't break
+%% Tests: 
+%% defend(10, zealot, (100,50),1,(NewHP, NewShield), NewLeft).
+defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (DefenderDamagedUnitHP, NewDefenderDamagedUnitShield), DefenderUnitLeft) :-
+	NewDefenderDamagedUnitShield is DefenderDamagedUnitShield - Damage,
+	NewDefenderDamagedUnitShield >= 0.
 	
+
+%% Case 2: Shield does break, Unit lives
+%% Tests:
+%% defend(50, zealot, (100,50),1,(NewHP, NewShield), NewLeft).
+%% defend(75, zealot, (100,0),1,(NewHP, NewShield), NewLeft).
+%% defend(75, zealot, (100,5),1,(NewHP, NewShield), NewLeft).
+
+defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, 0), DefenderUnitLeft) :-
+	NewDefenderDamagedUnitShield is DefenderDamagedUnitShield - Damage,
+	NewDefenderDamagedUnitShield < 0,
+	NewDamage is Damage - DefenderDamagedUnitShield,
+	NewDefenderDamagedUnitHP is DefenderDamagedUnitHP - NewDamage,
+	NewDefenderDamagedUnitHP > 0.
+
+%% Case 3: Defender Dies
+%% Reduce Total Damage left
+%% Check if shield breaks
+%% Check if HP hits 0
+%% Subtract total damage
+%% Setup new frontline unit
+%% Unit count down by one
+defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, NewDefenderDamagedUnitShield), NewDefenderUnitLeft) :-
+	TempShield is DefenderDamagedUnitShield - Damage,
+	TempShield < 0,
+	NewDamage is Damage - DefenderDamagedUnitShield,
+	TempHP is DefenderDamagedUnitHP - NewDamage,
+	TempHP =< 0,
+	NewDamage is Damage - DefenderDamagedUnitHP,
+	prop(Defender, shield, FreshShield),
+	prop(Defender, hp, FreshHP),
+	TempUnitLeft is DefenderUnitLeft - 1,
+	defend(NewDamage, Defender, (FreshHP, FreshShield), TempUnitLeft, (NewDefenderDamagedUnitHP, NewDefenderDamagedUnitShield), NewDefenderUnitLeft).
+
+	
+
+%% Looking at Tick
+%% 	End of any tick function: NextHit - 0.01.
+%% 	1.
+%% 		Need to keep track of NextHit. 
+%% 		Everytime NextHit hits 0:
+%% 			1. Attack.
+%% 			2. Set NextHit to CD.
+
+
+%% No one can hit, advance tick
+tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, EDamagedUnit, DamagedUnit, R) :- 
+	dif(ENextHit,0),
+	dif(NextHit,0),
+	X is ENextHit - 0.01,
+	Y is NextHit - 0.01,
+	tick(EUnit, Unit, EUnitLeft, UnitLeft, X, Y, EDamagedUnit, DamagedUnit, R).
+
+%% Unit can hit
+tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, 0, EDamagedUnit, DamagedUnit, R) :- 
+	attack(Unit, UnitLeft, EUnit, Damage),
+	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
+
+
+
+
+
+
+	X is ENextHit - 0.01,
+	Y is NextHit - 0.01,
+	tick(EUnit, Unit, NewEUnitLeft, UnitLeft, X, Y, NewEDamageUnit, DamagedUnit, R).
+
+
+
+
+
+
+%% Enemy unit can hit
+tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, NextHit, EDamagedUnit, DamagedUnit, R) :- 
+	X is ENextHit - 0.01,
+	Y is NextHit - 0.01,
+	tick(EUnit, Unit, EUnitLeft, UnitLeft, X, Y, EDamagedUnit, DamagedUnit, R).
 
 
 

@@ -1,3 +1,73 @@
+prop(probe, mineral, 100).
+prop(probe, gas, 0).
+prop(probe, armour, 0).
+prop(probe, hp, 20).
+prop(probe, shield, 20).
+prop(probe, race, protoss).
+prop(probe, attributeModifier, [light,mechanical]).
+prop(probe, groundAttack, 5).
+prop(probe, bonusAttack, 0).
+prop(probe, bonusType, []).
+prop(probe, coolDown, 1.07).
+prop(probe, range, 0).
+prop(probe, speed, 3.94).
+
+prop(zealot, mineral, 100).
+prop(zealot, gas, 0).
+prop(zealot, armour, 1).
+prop(zealot, hp, 100).
+prop(zealot, shield, 50).
+prop(zealot, race, protoss).
+prop(zealot, attributeModifier, [light,biological]).
+prop(zealot, groundAttack, 16).
+prop(zealot, bonusAttack, 0).
+prop(zealot, bonusType, []).
+prop(zealot, coolDown, 0.86).
+prop(zealot, range, 0).
+prop(zealot, speed, 3.15).
+
+prop(sentry, mineral, 50).
+prop(sentry, gas, 100).
+prop(sentry, armour, 1).
+prop(sentry, hp, 40).
+prop(sentry, shield, 40).
+prop(sentry, race, protoss).
+prop(sentry, attributeModifier, [light,mechanical,psionic]).
+prop(sentry, groundAttack, 6).
+prop(sentry, bonusAttack, 0).
+prop(sentry, bonusType, []).
+prop(sentry, coolDown, 0.71).
+prop(sentry, range, 5).
+prop(sentry, speed, 3.15).
+
+prop(stalker, mineral, 125).
+prop(stalker, gas, 50).
+prop(stalker, armour, 1).
+prop(stalker, hp, 80).
+prop(stalker, shield, 80).
+prop(stalker, race, protoss).
+prop(stalker, attributeModifier, [armoured,mechanical]).
+prop(stalker, groundAttack, 10).
+prop(stalker, bonusAttack, 4).
+prop(stalker, bonusType, [armoured]).
+prop(stalker, coolDown, 1.03).
+prop(stalker, range, 6).
+prop(stalker, speed, 4.13).
+
+prop(adept, mineral, 100).
+prop(adept, gas, 25).
+prop(adept, armour, 1).
+prop(adept, hp, 70).
+prop(adept, shield, 70).
+prop(adept, race, protoss).
+prop(adept, attributeModifier, [light,biological]).
+prop(adept, groundAttack, 10).
+prop(adept, bonusAttack, 12).
+prop(adept, bonusType, [light]).
+prop(adept, coolDown, 1.61).
+prop(adept, range, 4).
+prop(adept, speed, 3.5).
+
 % Knowledgebase using Triple
 %
 % Properties we are keeping
@@ -27,7 +97,8 @@
 
 counter(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, R) :-
 	inspect(Unit, EMineral, EGas, EHP, EShield, EArmour, EGroundAttack, EBonusAttack, EBonusType, ECoolDown, ERange),
-	inspectRace(R, L).
+	inspectRace(R, L),
+	battleSimulation(Unit, NumberOfUnits, L, MinAvailable, GasAvailable, R).
 
 
 %% U is the enemies unit.
@@ -42,7 +113,7 @@ counter(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, R) :-
 %% CoolDown, (Time inbetween attacks)
 %% attributeModifier, (List of attributes this unit has)
 %% Range (Range of Unit's attack)
-% inspect(U, Mineral, Gas, HP, Shield, Armour, GroundAttack, BonusAttack, BonusTyp% e, CoolDown, Range) :-
+% inspect(U, Mineral, Gas, HP, Shield, Armour, GroundAttack, BonusAttack, BonusTypes, CoolDown, Range) :-
 % prop(U, mineral, Mineral), gas(U, Gas), hp(U, HP), shield(U, Shield),
 % armour(U, Armour), groundAttack(U,GroundAttack)
 % bonusAttack(U,BonusAttack), bonusType(U, BonusType), coolDown(U,
@@ -74,6 +145,7 @@ inspectRace(R, L) :-
 %% If GPU is 0 give -1.
 maxBuild(_,0,-1).
 maxBuild(GA,GPU,R) :-
+	diff(GPU, 0),
 	R is GA / GPU.
 
 %% SpecialMin is true when R is min of X and Y. Except -1 is max.
@@ -89,13 +161,72 @@ specialMin(X, Y, R) :-
 %% MinAvailable is the minerals available
 %% GasAvailable is the gas available
 %% UnitsBuilt is the number of unit U built from recourses given
-builtUnits(U, MinAvailable, GasAvailable, UnitsBuilt) :-
+buildUnits(U, MinAvailable, GasAvailable, UnitsBuilt) :-
 	prop(U, gas, GasPerUnit),
 	prop(U, mineral, MineralsPerUnit),
 	maxBuild(GasAvailable, GasPerUnit, GasMax),
 	maxBuild(MinAvailable, MineralsPerUnit, MineralMax),
 	specialMin(GasMax, MineralMax, UnitsBuilt).
 
+
+%% Grants free hits for opponent with higher range based on slower units movement speed to get into range.
+%% EUnit hits first
+rangeChecker(EUnit, Unit, 0, NextHit) :-
+	prop(EUnit, range, ER),
+	prop(Unit, range, R),
+	ER > R,
+	Distance is ER - R,
+	prop(Unit, speed, Speed),
+	Tick is 0.01,
+	MovePerTick is Speed * Tick,
+	NextHit is Distance / MovePerTick.
+
+%% Unit hits first
+rangeChecker(EUnit, Unit, ENextHit, 0) :-
+	prop(EUnit, range, ER),
+	prop(Unit, range, R),
+	R > ER,
+	Distance is R - ER,
+	prop(EUnit, speed, Speed),
+	Tick is 0.01,
+	MovePerTick is Speed * Tick,
+	ENextHit is Distance / MovePerTick.
+
+
+	%% Take speed of slower unit (LOOK AT NOTES)
+
+
+
+
+
+%% battleSimulation(Unit, NumberOfUnits, L, MinAvailable, GasAvailable, R). is true when:
+%% Unit is the enemies unit
+%% EUnitLeft is the number of enemy units
+%% L is a list of units that are available to your race
+%% MinAvailable is how many minerals you have available
+%% GasAvailable is how much gas you have available
+%% R is a list of elements. Each element has unit, HP total left, and resources leftover.
+%% HP total left is the total HP left of the built units after going through battleSimulation with the enemy
+battleSimulation(EUnit, EUnitLeft, [], MinAvailable, GasAvailable, []).
+battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
+	buildUnits(Unit, MinAvailable, GasAvailable, UnitLeft),
+	
+	rangeChecker(Eunit, Unit, ENextHit, NextHit),
+	prop(EUnit, coolDown, ECD),
+	prop(Unit, coolDown, CD),
+	tick(0,ECD, CD, EUnitLeft, UnitLeft, ENextHit,NextHit,R).
+	
+
+
+
+
+tick(Time, ECD, CD, EUnitLeft, UnitLeft, ENextHit, NextHit) :-
+	
+
+
+
+% damage calculation
+% # of unit * ( (basic attack + bonus) - Earmour / cooldown ) = Total dps
 
 %% counter (
 %%	Get info about enemies unit

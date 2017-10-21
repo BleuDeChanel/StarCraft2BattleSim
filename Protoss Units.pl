@@ -1,4 +1,4 @@
-prop(probe, mineral, 100).
+prop(probe, mineral, 50).
 prop(probe, gas, 0).
 prop(probe, armour, 0).
 prop(probe, hp, 20).
@@ -67,3 +67,45 @@ prop(adept, bonusType, [light]).
 prop(adept, coolDown, 1.61).
 prop(adept, range, 4).
 prop(adept, speed, 3.5).
+
+prop(darkTemplar, mineral, 125).
+prop(darkTemplar, gas, 125).
+prop(darkTemplar, armour, 1).
+prop(darkTemplar, hp, 40).
+prop(darkTemplar, shield, 80).
+prop(darkTemplar, race, protoss).
+prop(darkTemplar, attributeModifier, [light,biological,psionic]).
+prop(darkTemplar, groundAttack, 10).
+prop(darkTemplar, bonusAttack, 12).
+prop(darkTemplar, bonusType, [light]).
+prop(darkTemplar, coolDown, 1.61).
+prop(darkTemplar, range, 4).
+prop(darkTemplar, speed, 3.5).
+
+prop(immortal, mineral, 250).
+prop(immortal, gas, 100).
+prop(immortal, armour, 1).
+prop(immortal, hp, 200).
+prop(immortal, shield, 100).
+prop(immortal, race, protoss).
+prop(immortal, attributeModifier, [armoured,mechanical]).
+prop(immortal, groundAttack, 20).
+prop(immortal, bonusAttack, 30).
+prop(immortal, bonusType, [armoured]).
+prop(immortal, coolDown, 1.04).
+prop(immortal, range, 6).
+prop(immortal, speed, 3.15).
+
+prop(colossus, mineral, 300).
+prop(colossus, gas, 200).
+prop(colossus, armour, 1).
+prop(colossus, hp, 200).
+prop(colossus, shield, 150).
+prop(colossus, race, protoss).
+prop(colossus, attributeModifier, [armoured,mechanical,massive]).
+prop(colossus, groundAttack, 12).
+prop(colossus, bonusAttack, 0).
+prop(colossus, bonusType, []).
+prop(colossus, coolDown, 1.18).
+prop(colossus, range, 6).
+prop(colossus, speed, 3.15).

@@ -307,10 +307,27 @@ defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), Def
 	TempUnitLeft is DefenderUnitLeft - 1,
 	defend(NewNewDamage, Defender, (FreshHP, FreshShield), TempUnitLeft, (NewDefenderDamagedUnitHP, NewDefenderDamagedUnitShield), NewDefenderUnitLeft).
 
+
+%% Jumps to next attack
+
+%% No one can hit. Jump to next attack. Cases: Enemey is next hit, You're next hit, you both are next hit(same ENextHit and NextHit)
+%% Enemy is next
+goToNextAttack(ENextHit, NextHit, 0, NewNextHit) :- 
+	dif(ENextHit,NextHit),
+	ENextHit < NextHit,
+	NewNextHit is NextHit - ENextHit.
 	
+%% You're next hit
+goToNextAttack(ENextHit, NextHit, NewENextHit, 0) :- 
+	dif(ENextHit,NextHit),
+	NextHit < ENextHit,
+	NewENextHit is ENextHit - NextHit.
+%% Both are next hit
+goToNextAttack(NextHit, NextHit, 0, 0).
 
 %% Looking at Tick
-%% 	Doesn't tick on 0.01, but jumps to next attack tick after each tick. Keeping track of who attacks next and when.
+%% 	One of ENextHit and NextHit is 0.
+%% 
 %% 	1.
 %% 		Need to keep track of NextHit. 
 %% 		Everytime NextHit hits 0:
@@ -330,24 +347,14 @@ defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), Def
 %% Tests:
 %% tick()
 
-%% No one can hit, Jump to next attack. Cases: Enemey is next hit, You're next hit, you both are next hit(same ENextHit and NextHit)
-tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, EDamagedUnit, DamagedUnit, R) :- 
-	EUnitLeft > 0,
-	UnitLeft > 0,
-	ENextHit > 0,
-	NextHit > 0,
-	%% ENextHit < NextHit,
 
-	X is ENextHit - 0.01,
-	Y is NextHit - 0.01,
-	tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, Y, EDamagedUnit, DamagedUnit, R).
 
 %% No Enemies left!!! Record result and exit tick.
 tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, (HP, Shield), (Unit,TotalHP)) :- 
 	EUnitLeft =< 0,
 	UnitLeft > 0,
 	prop(Unit, hp, FullHP),
-	TotalHP is FullHP * UnitLeft + HP.
+	TotalHP is FullHP * (UnitLeft - 1) + HP.
 
 %% No Units left :( Record result and exit tick.
 tick(_, Unit, _, UnitLeft, _, _, _, _, (Unit,0)) :-
@@ -360,9 +367,9 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, 0, EDamagedUnit, DamagedUnit, R
 	ENextHit > 0,
 	attack(Unit, UnitLeft, EUnit, Damage),
 	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
-	X is ENextHit - 0.01,
-	prop(Unit, coolDown, NewNextHit),
-	tick(EUnit, Unit, NewEUnitLeft, UnitLeft, X, NewNextHit, NewEDamageUnit, DamagedUnit, R).
+	prop(Unit, coolDown, CD),
+	goToNextAttack(ENextHit, CD, NewENextHit, NewNextHit),
+	tick(EUnit, Unit, NewEUnitLeft, UnitLeft, NewENextHit, NewNextHit, NewEDamageUnit, DamagedUnit, R).
 
 
 %% Enemy unit can hit
@@ -372,9 +379,9 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, NextHit, EDamagedUnit, DamagedUnit, R)
 	NextHit > 0,
 	attack(EUnit, EUnitLeft, Unit, Damage),
 	defend(Damage, Unit, DamagedUnit, UnitLeft, NewDamageUnit, NewUnitLeft),
-	prop(EUnit, coolDown, NewENextHit),
-	Y is NextHit - 0.01,
-	tick(EUnit, Unit, EUnitLeft, NewUnitLeft, NewENextHit, Y, EDamagedUnit, NewDamageUnit, R).
+	prop(EUnit, coolDown, ECD),
+	goToNextAttack(ECD, NextHit, NewENextHit, NewNextHit),
+	tick(EUnit, Unit, EUnitLeft, NewUnitLeft, NewENextHit, NewNextHit, EDamagedUnit, NewDamageUnit, R).
 
 %% Both units can hit
 %% Both attack with full force.
@@ -386,8 +393,9 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 	attack(Unit, UnitLeft, EUnit, Damage),
 	defend(EDamage, Unit, DamagedUnit, UnitLeft, NewDamageUnit, NewUnitLeft),
 	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
-	prop(EUnit, coolDown, NewENextHit),
-	prop(Unit, coolDown, NewNextHit),
+	prop(EUnit, coolDown, ECD),
+	prop(Unit, coolDown, CD),
+	goToNextAttack(ECD,CD,NewENextHit,NewNextHit),
 	tick(EUnit, Unit, NewEUnitLeft, NewUnitLeft, NewENextHit, NewNextHit, NewEDamageUnit, NewDamageUnit, R).
 
 

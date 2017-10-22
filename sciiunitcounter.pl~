@@ -504,8 +504,8 @@ availableUnits(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(
 filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,ListofAllUnits), availableUnits(MinAvailable, GasAvailable, ListofAllUnits, [], Result).
 
 % Reverse the order back.
-filterUserUnitInOrder(Race, MinAvailable, GasAvailable, Result) :-
-filterUserUnit(Race, MinAvailable, GasAvailable, Result), reverse(Result).
+filterUserUnitInOrder(Race, MinAvailable, GasAvailable, OrderedResult) :-
+filterUserUnit(Race, MinAvailable, GasAvailable, Result), reverse(Result, OrderedResult).
 
 % Calculate the mineral spent; lower the number, more efficient the
 % unit is.

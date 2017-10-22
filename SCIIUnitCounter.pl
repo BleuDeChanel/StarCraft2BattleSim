@@ -537,6 +537,19 @@ resourceSpent(Unit, GasToMin, TotalHPleft, ResourceSpent) :-
 	UnitsLeft = ceiling(TotalHPleft/(UnitHP+UnitShield)),
 	ResourceSpent is UnitsLeft*UnitCost.
 
+% Calculate the resource spent, returning the Mineral and Gas spent
+% separate.
+resourceSpent2(Unit, GasToMin, TotalHPleft, MineralSpent, GasSpent, ResourceSpent) :-
+	prop(Unit, mineral, MinCost),
+	prop(Unit,gas,GasCost),
+	UnitCost = MinCost+GasCost*GasToMin,
+	prop(Unit,hp,UnitHP),
+	prop(Unit,shield,UnitShield),
+	UnitsLeft = ceiling(TotalHPleft/(UnitHP+UnitShield)),
+	MineralSpent is UnitsLeft*MinCost,
+	GasSpent is UnitsLeft*GasCost,
+	ResourceSpent is UnitsLeft*UnitCost.
+
 % find the most cost efficient unit
 min([],X,X,_,_).
 min([H|T],M,X,GasToMin,TotalHPLeft) :-

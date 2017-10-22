@@ -195,7 +195,7 @@ inspectRace(R, L) :-
 maxBuild(_,0,-1).
 maxBuild(GA,GPU,R) :-
 	dif(GPU, 0),
-	R is GA / GPU.
+	R is floor(GA / GPU).
 
 %% SpecialMin is true when R is min of X and Y. Except -1 is max.
 specialMin(-1, Y, Y).
@@ -495,12 +495,17 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 % Unit.
 availableUnit(Unit, MinAvailable, GasAvailable, Res) :- buildUnits(Unit, MinAvailable, GasAvailable, N), N>0, Res is 1.
 
-% This returns the reversed order...
+% Builds a list of units that are available to make from the input list
 availableUnits(_, _, [], L, L).
 availableUnits(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1) -> availableUnits(MinAvailable, GasAvailable, T, [H|Acc], Result); availableUnits(MinAvailable,GasAvailable,T,Acc,Result).
 
+% Filters a list of units in reverse order according to the race and
+% resources available.
 filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,ListofAllUnits), availableUnits(MinAvailable, GasAvailable, ListofAllUnits, [], Result).
 
+% Reverse the order back.
+filterUserUnitInOrder(Race, MinAvailable, GasAvailable, OrderedResult) :-
+filterUserUnit(Race, MinAvailable, GasAvailable, Result), reverse(Result, OrderedResult).
 
 % Calculate the mineral spent; lower the number, more efficient the
 % unit is.
@@ -534,8 +539,7 @@ resourceSpent(Unit, GasToMin, TotalHPleft, ResourceSpent) :-
 
 % find the most cost efficient unit
 min([],X,X,_,_).
-min([H|T],M,X,GasToMin,TotalHPLeft)
-:-
+min([H|T],M,X,GasToMin,TotalHPLeft) :-
 resourceSpent(H,GasToMin,TotalHPLeft, Unit1Cost),
 resourceSpent(M,GasToMin,TotalHPLeft, Unit2Cost),
 Unit1Cost =< Unit2Cost -> min(T,H,X,GasToMin,TotalHPLeft);min(T,M,X,GasToMin,TotalHPLeft).

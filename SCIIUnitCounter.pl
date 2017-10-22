@@ -345,7 +345,7 @@ goToNextAttack(NextHit, NextHit, 0, 0).
 %% R is result of battle, (Unit, TotalHP of your army left)
 
 %% Tests:
-%% tick()
+%% tick(zealot,zealot,70,60,0,0,(100,50),(100,50),R).
 
 
 

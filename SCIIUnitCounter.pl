@@ -248,28 +248,28 @@ attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 
 
 
-%% NOTE: Shield will be added to HP, and use same Armour as it's unit's Armour. 
+%% NOTE: Shield will be added to HP, and use same Armour as it's unit's Armour.
 %% It should have it's own armour value.
 
-%% 	Looking into Attack 
-%% 		1. Must keep track of UnitsLeft.
-%% 		2. Keep track of one DamagedUnit per side. Damaged unit is (HPLeft, ShieldLeft)
-%% 		3. An attack is 
-%% 			Damage = UnitLeft * ( ( BasicAttack + BonusAttack - EArmour) ).
-%% 			TempHP = EDamagedUnit's HP
-%% 			EDamagedUnit's HP = EDamagedUnit's HP - Damage. If 0, dead. EUnitLeft - 1. EDamagedUnit HP set to full.
-%% 			Damage = Damage - TempHP.
-%% 			Repeat till Damage is 0.
+%%	Looking into Attack
+%%		1. Must keep track of UnitsLeft.
+%%		2. Keep track of one DamagedUnit per side. Damaged unit is (HPLeft, ShieldLeft)
+%%		3. An attack is
+%%			Damage = UnitLeft * ( ( BasicAttack + BonusAttack - EArmour) ).
+%%			TempHP = EDamagedUnit's HP
+%%			EDamagedUnit's HP = EDamagedUnit's HP - Damage. If 0, dead. EUnitLeft - 1. EDamagedUnit HP set to full.
+%%			Damage = Damage - TempHP.
+%%			Repeat till Damage is 0.
 
 %% Base case
-%% Defender doesn't die. Set the New values. 
+%% Defender doesn't die. Set the New values.
 %% Case 1: Shield doesn't break
-%% Tests: 
+%% Tests:
 %% defend(10, zealot, (100,50),1,(NewHP, NewShield), NewLeft).
 defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (DefenderDamagedUnitHP, NewDefenderDamagedUnitShield), DefenderUnitLeft) :-
 	NewDefenderDamagedUnitShield is DefenderDamagedUnitShield - Damage,
 	NewDefenderDamagedUnitShield >= 0.
-	
+
 
 %% Case 2: Shield does break, Unit lives
 %% Tests:
@@ -292,9 +292,9 @@ defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), Def
 %% Setup new frontline unit
 %% Unit count down by one
 %% Tests:
-%% defend(1000, zealot, (100,50),100,(NewHP, NewShield), NewLeft). 	Expect: NewHP = 50  NewShield = 0  NewLeft = 94
+%% defend(1000, zealot, (100,50),100,(NewHP, NewShield), NewLeft).	Expect: NewHP = 50  NewShield = 0  NewLeft = 94
 %% defend(250, zealot, (100,50),2,(NewHP, NewShield), NewLeft).		Expect: NewHP = 50  NewShield = 0  NewLeft = 1
-%% defend(300, zealot, (100,50),2,(NewHP, NewShield), NewLeft). 	Expect: NewHP = 100 NewShield = 50 NewLeft = 0
+%% defend(300, zealot, (100,50),2,(NewHP, NewShield), NewLeft).		Expect: NewHP = 100 NewShield = 50 NewLeft = 0
 defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, NewDefenderDamagedUnitShield), NewDefenderUnitLeft) :-
 	TempShield is DefenderDamagedUnitShield - Damage,
 	TempShield < 0,
@@ -312,13 +312,13 @@ defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), Def
 
 %% No one can hit. Jump to next attack. Cases: Enemey is next hit, You're next hit, you both are next hit(same ENextHit and NextHit)
 %% Enemy is next
-goToNextAttack(ENextHit, NextHit, 0, NewNextHit) :- 
+goToNextAttack(ENextHit, NextHit, 0, NewNextHit) :-
 	dif(ENextHit,NextHit),
 	ENextHit < NextHit,
 	NewNextHit is NextHit - ENextHit.
-	
+
 %% You're next hit
-goToNextAttack(ENextHit, NextHit, NewENextHit, 0) :- 
+goToNextAttack(ENextHit, NextHit, NewENextHit, 0) :-
 	dif(ENextHit,NextHit),
 	NextHit < ENextHit,
 	NewENextHit is ENextHit - NextHit.
@@ -326,13 +326,13 @@ goToNextAttack(ENextHit, NextHit, NewENextHit, 0) :-
 goToNextAttack(NextHit, NextHit, 0, 0).
 
 %% Looking at Tick
-%% 	One of ENextHit and NextHit is 0.
-%% 
-%% 	1.
-%% 		Need to keep track of NextHit. 
-%% 		Everytime NextHit hits 0:
-%% 			1. Attack.
-%% 			2. Set NextHit to CD.
+%%	One of ENextHit and NextHit is 0.
+%%
+%%	1.
+%%		Need to keep track of NextHit.
+%%		Everytime NextHit hits 0:
+%%			1. Attack.
+%%			2. Set NextHit to CD.
 %% tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, DamagedUnit, EDamagedUnit, R)
 %% Eunit - Enemy's Unit
 %% Unit - Your Unit
@@ -350,7 +350,7 @@ goToNextAttack(NextHit, NextHit, 0, 0).
 
 
 %% No Enemies left!!! Record result and exit tick.
-tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, (HP, Shield), (Unit,TotalHP)) :- 
+tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, (HP, Shield), (Unit,TotalHP)) :-
 	EUnitLeft =< 0,
 	UnitLeft > 0,
 	prop(Unit, hp, FullHP),
@@ -447,33 +447,14 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 %% (Basic attack + bonus atk - armour)/CD * number of units is DPS.
 
 
-
 % Jin Min trying to wrap around his head.
-%
-% availableUnits(MinAvailable, GasAvailable, AllUnits, Result).
-% (AllUnits is ListofAllUnits)
 
-availableUnits(_, _,[],L,L).
-availableUnits(MinAvailable, GasAvailable, [H|T],Acc,[H|RT]) :- buildUnits(H, MinAvailable, GasAvailable, N), N>0, availableUnits(MinAvailable, GasAvailable,T,[H|Acc],RT).
-% availableUnits(MinAvailable, GasAvailable,[H|T],Acc,[D|RT]) :-
-% dif(H,D), buildUnits(H, MinAvailable, GasAvailable, N), N>0,
-% availableUnits(MinAvailable, GasAvailable,T,Acc,RT).
-
-% ?- % availableUnits(400,0,
-% [probe,zealot,sentry,stalker,adept,darkTemplar,immortal,colossus], [],
-% R). (MinAvailable and GasAvailable inputs are availabe on the upper
-% function // I'm passing them as a input now) (400, 0) R = [probe,
-% zealot];
-
-% Res is 1(true) if the N is greater than 0, meaning can make the Unit.
+% Res is 1(true) if the N is greater than 0, meaning User can make the
+% Unit.
 availableUnit(Unit, MinAvailable, GasAvailable, Res) :- buildUnits(Unit, MinAvailable, GasAvailable, N), N>0, Res is 1.
 
-% This returns the reversed order and doesn't work with a list including
-% N = 0... Huge bug.
-availableUnits2(_, _, [], L, L).
-availableUnits2(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1), availableUnits2(MinAvailable, GasAvailable, T, [H|Acc], Result).
-
-
-availableUnits22(U, MinAvailable, GasAvailable, L) :- findall(U, buildUnits(U, MinAvailable, GasAvailable, N>0), L).
+% This returns the reversed order...
+availableUnits(_, _, [], L, L).
+availableUnits(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1) -> availableUnits(MinAvailable, GasAvailable, T, [H|Acc], Result); availableUnits(MinAvailable,GasAvailable,T,Acc,Result).
 
 filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,ListofAllUnits), availableUnits(MinAvailable, GasAvailable, ListofAllUnits, [], Result).

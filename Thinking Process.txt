@@ -61,66 +61,16 @@ UnitsBuilt = 0;
 ?- builtUnits(colossus, 400, 0, UnitsBuilt)
 UnitsBuilt = 0;
 
-Then using this helper, make availableUnits return the filtered list?
+Then using this helper, make availableUnits return the filtered list
 
-
-
+% Res is 1(true) if the N is greater than 0, meaning User can make the Unit.
 availableUnit(Unit, MinAvailable, GasAvailable, Res) :- buildUnits(Unit, MinAvailable, GasAvailable, N), N>0, Res is 1.
 
-
-% availableUnits(MinAvailable, GasAvailable, ListOfAllUnits, Acc, Result)
-availableUnits2(MinAvailable, GasAvailable, [], L, L).
-availableUnits2(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1), availableUnits2(MinAvailable, GasAvailable, T, [H|Acc], Result).
-
-
-
-
-
-
-
-% availableUnits(AllUnits, Acc, Result). (AllUnits is ListofAllUnits)
-// availableUnits([],[],[]).
-availableUnits([],L,L).
-availableUnits([H|T],Acc,[H|RT]) :- N>0, builtUnits(H, MinAvailable, GasAvailable, N), availableUnits(T,[Acc|[H]],RT). 
-// availableUnits([H|T],Acc,[D|RT]) :- dif(H,D), N>0, builtUnits(H, MinAvailable, GasAvailable, N), availableUnits(T,Acc,RT).
-
-?- availableUnits([probe,zealot,sentry,stalker,adept,darkTemplar,immortal,colossus], [], R). (MinAvailable and GasAvailable inputs are availabe on the upper function?) (400, 0)
-
-R = [probe, zealot];
-
-
-So if we integrate them together...
-
-% filterUserUnit(Race, MinAvailable, GasAvailable, Result)
-filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,ListofAllUnits), availableUnits(ListofAllUnits, [], Result).
-
-
-
-UPDATE - eliminating singleton var. On Prolog file
-
-% availableUnits(MinAvailable, GasAvailable, AllUnits, Acc, Result).
-% (AllUnits is ListofAllUnits)
-
-availableUnits(_, _,[],L,L).
-availableUnits(MinAvailable, GasAvailable, [H|T],Acc,[H|RT]) :- buildUnits(H, MinAvailable, GasAvailable, N), N>0, availableUnits(MinAvailable, GasAvailable,T,[H|Acc],RT).
-
-availableUnits(MinAvailable, GasAvailable, [H|T],Acc,[D|RT]) :- dif(H,D), buildUnits(H, MinAvailable, GasAvailable, N), N>0, availableUnits(MinAvailable, GasAvailable,T,Acc,RT).
-
-% ?- availableUnits(400,0,[probe,zealot,sentry,stalker,adept,darkTemplar,immortal,colossus], [], R). (MinAvailable and GasAvailable inputs are availabe on the upper function?) (400, 0)
-% R = [probe, zealot];
+% This returns the reversed order...
+availableUnits(_, _, [], L, L).
+availableUnits(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1) -> availableUnits(MinAvailable, GasAvailable, T, [H|Acc], Result); availableUnits(MinAvailable,GasAvailable,T,Acc,Result).
 
 filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,ListofAllUnits), availableUnits(MinAvailable, GasAvailable, ListofAllUnits, [], Result).
-
-
-
-FUCKING PROLOG CAN'T DEBUG - start from scratch...
-
-availableUnits(U, L) :- findall(dif(X,0), buildUnits(U, MinAvailable, GasAvailalbe, X), L).
-
-someFunction
-
-
-
 
 
 3) Do damageCalculation with the available units vs enemy's unit and return how many units User have left. (Add Range calculation later if we have time)

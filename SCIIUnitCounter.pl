@@ -458,3 +458,15 @@ availableUnits(_, _, [], L, L).
 availableUnits(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1) -> availableUnits(MinAvailable, GasAvailable, T, [H|Acc], Result); availableUnits(MinAvailable,GasAvailable,T,Acc,Result).
 
 filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,ListofAllUnits), availableUnits(MinAvailable, GasAvailable, ListofAllUnits, [], Result).
+
+% Calculate the resource spent; lower the number, more efficient the
+% unit is.
+resourceSpent(Unit, GasToMin, TotalHPleft, ResourceSpent) :-
+        prop(Unit, mineral, MinCost),
+	prop(Unit,gas,GasCost),
+	UnitCost = MinCost+GasCost*GasToMin,
+	prop(Unit,hp,UnitHP),
+	prop(Unit,shield,UnitShield),
+	UnitsLeft = ceiling(TotalHPleft/(UnitHP+UnitShield)),
+	ResourceSpent is UnitsLeft*UnitCost.
+

@@ -75,6 +75,10 @@ filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,Lis
 
 3) Do damageCalculation with the available units vs enemy's unit and return how many units User have left. (Add Range calculation later if we have time)
 
+
+
+
+
 4) With the number of survived units of User, calculate the difference between MinAvailable/GasAvailabe and cost of the survived units. Then the unit with the lowest (min) number of this result (the difference) is most cost efficient, as it represents the resource User spent for the lost units. (We may need some sort of conversion between the value of Mineral and Gas here)
 
 

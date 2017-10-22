@@ -447,7 +447,6 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 %% (Basic attack + bonus atk - armour)/CD * number of units is DPS.
 
 
-
 % Jin Min trying to wrap around his head.
 
 % Res is 1(true) if the N is greater than 0, meaning User can make the
@@ -459,3 +458,15 @@ availableUnits(_, _, [], L, L).
 availableUnits(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1) -> availableUnits(MinAvailable, GasAvailable, T, [H|Acc], Result); availableUnits(MinAvailable,GasAvailable,T,Acc,Result).
 
 filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,ListofAllUnits), availableUnits(MinAvailable, GasAvailable, ListofAllUnits, [], Result).
+
+% Calculate the resource spent; lower the number, more efficient the
+% unit is.
+resourceSpent(Unit, GasToMin, TotalHPleft, ResourceSpent) :-
+        prop(Unit, mineral, MinCost),
+	prop(Unit,gas,GasCost),
+	UnitCost = MinCost+GasCost*GasToMin,
+	prop(Unit,hp,UnitHP),
+	prop(Unit,shield,UnitShield),
+	UnitsLeft = (TotalHPleft/(UnitHP+UnitShield))+1,
+	ResourceSpent is UnitsLeft*UnitCost.
+

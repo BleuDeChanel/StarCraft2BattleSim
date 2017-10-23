@@ -767,21 +767,8 @@ resourceSpent2(Unit, GasToMin, UnitsLeft, MineralSpent, GasSpent, ResourceSpent)
 	GasSpent is UnitsLeft*GasCost,
 	ResourceSpent is UnitsLeft*UnitCost.
 
-% Calculate the resources left, after the battle
-resourceLeft(Unit, GasToMin, UnitsLeft, MinAv, MinLeft, GasAv, GasLeft, ResourceLeft) :-
-	prop(Unit, mineral, MinCost),
-	prop(Unit,gas,GasCost),
-	UnitCost is MinCost+GasCost*GasToMin,
-	ResourceAv is MinAv+GasAv*GasToMin,
-	MineralSpent is UnitsLeft*MinCost,
-	GasSpent is UnitsLeft*GasCost,
-	ResourceSpent is UnitsLeft*UnitCost,
-	MinLeft is MinAv-MineralSpent,
-	GasLeft is GasAv-GasSpent,
-	ResourceLeft is ResourceAv-ResourceSpent.
-
 % Return the cost efficiency of the unit.
-costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft)) :-
+costEfficiency((Unit,UnitsLeft), GasToMin,MinAv, GasAv, (Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft)) :-
 	prop(Unit, mineral, MinCost),
 	prop(Unit,gas,GasCost),
 	UnitCost = MinCost+GasCost*GasToMin,
@@ -797,15 +784,16 @@ costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,Re
 % Return the list of all units' cost efficiency
 costEfficiencyList([],_,_,_,[]).
 costEfficiencyList([(Unit,UnitsLeft)|T],MinAv,GasAv,GasToMin,[R1|R]) :-
-	costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, R1),
+	costEfficiency((Unit,UnitsLeft), GasToMin, MinAv, GasAv, R1),
 	costEfficiencyList(T,MinAv,GasAv,GasToMin,R).
 
 
-% find the most cost efficient unit
+% find the most cost efficient unit Fatal Error... Fixed UnitsLeft...
 min([],X,X,_,_).
 min([H|T],M,X,GasToMin,UnitsLeft) :-
-resourceSpent(H,GasToMin,UnitsLeft, Unit1Cost),
-resourceSpent(M,GasToMin,UnitsLeft, Unit2Cost),
-Unit1Cost =< Unit2Cost -> min(T,H,X,GasToMin,UnitsLeft);min(T,M,X,GasToMin,UnitsLeft).
-costEfficientUnit([H|T],Unit,GasToMin,UnitsLeft) :- min(T,H,Unit,GasToMin,UnitsLeft).
+costEfficiency(H, GasToMin, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit1Cost,UnitsLeft)),
+costEfficiency(M, GasToMin, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit2Cost,UnitsLeft)),
+Unit1Cost > Unit2Cost -> min(T,H,X,GasToMin,UnitsLeft);min(T,M,X,GasToMin,UnitsLeft).
+
+costEfficientUnit([(H,UnitsLeft)|T],Unit,GasToMin) :- min(T,H,Unit,GasToMin,UnitsLeft).
 

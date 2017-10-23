@@ -788,11 +788,12 @@ costEfficiencyList([(Unit,UnitsLeft)|T],MinAv,GasAv,GasToMin,[R1|R]) :-
 	costEfficiencyList(T,MinAv,GasAv,GasToMin,R).
 
 
-% find the most cost efficient unit
+% find the most cost efficient uni; Not working properly atm...
 min([],X,X,_,_).
 min([H|T],M,X,GasToMin,UnitsLeft) :-
-resourceSpent(H,GasToMin,UnitsLeft, Unit1Cost),
-resourceSpent(M,GasToMin,UnitsLeft, Unit2Cost),
-Unit1Cost =< Unit2Cost -> min(T,H,X,GasToMin,UnitsLeft);min(T,M,X,GasToMin,UnitsLeft).
-costEfficientUnit([H|T],Unit,GasToMin,UnitsLeft) :- min(T,H,Unit,GasToMin,UnitsLeft).
+costEfficiency(H, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit1Cost,UnitsLeft)),
+costEfficiency(M, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit2Cost,UnitsLeft)),
+Unit1Cost >= Unit2Cost -> min(T,H,X,GasToMin,UnitsLeft);min(T,M,X,GasToMin,UnitsLeft).
+
+costEfficientUnit([(H,UnitsLeft)|T],Unit,GasToMin) :- min(T,H,Unit,GasToMin,UnitsLeft).
 

@@ -151,7 +151,7 @@ prop(colossus, speed, 3.15).
 %% Print out more stats from battles as they happen???
 %% Import KB from other files
 
-counter(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, BattleResult) :-
+main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, BattleResult) :-
 	
 	NumberOfUnits > 0,
 	
@@ -162,46 +162,11 @@ counter(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, BattleResult) :-
 	
 
 
-% U is the enemies unit.
-% Inspect will give back:
-% Mineral,
-% Gas,
-% Armour
-% Shield, (0 if unit has no sheilds, that is not Protoss race)
-% HP,
-% GroundAttack,
-% BonusAttack, (Has this value added to GroundAttack when attacking one of it's BonusType)
-% BonusType, (List of type bonuses)
-% CoolDown, (Time inbetween attacks)
-% attributeModifier, (List of attributes this unit has)
-% Range (Range of Unit's attack)
-% inspect(U, Mineral, Gas, HP, Shield, Armour, GroundAttack, BonusAttack, BonusTypes, CoolDown, Range) :-
-% prop(U, mineral, Mineral), gas(U, Gas), hp(U, HP), shield(U, Shield),
-% armour(U, Armour), groundAttack(U,GroundAttack)
-% bonusAttack(U,BonusAttack), bonusType(U, BonusType), coolDown(U,
-% CoolDown), range(U, Range).
-
-inspect(U, Mineral, Gas, Armour, HP, Shield, GroundAttack, BonusAttack, BonusType, CoolDown, Range) :-
-	prop(U, mineral, Mineral),
-	prop(U, gas, Gas),
-	prop(U, hp, HP),
-	prop(U, shield, Shield),
-	prop(U, armour, Armour),
-	prop(U, groundAttack, GroundAttack),
-	prop(U, bonusAttack, BonusAttack),
-	prop(U, bonusType, BonusType),
-	prop(U, coolDown, CoolDown),
-	prop(U, range, Range).
-
-
-
 %% R is a race (Protoss, Zerg, Terran) of the User
 %% L is a list of units this race can make that are in our KB
 
 inspectRace(R, L) :-
 	findall(X0, prop(X0, race, R), L).
-
-
 
 %% intersects(L1, L2) is true if one of L1's elements is in L2.
 intersects([H|_],List) :-
@@ -209,8 +174,6 @@ intersects([H|_],List) :-
     !.
 intersects([_|T],List) :-
     intersects(T,List).
-
-
 
 %% MaxBuild is true if R is GA / GPU.
 %% If GPU is 0 give -1.
@@ -250,7 +213,8 @@ rangeChecker(EUnit, Unit, 0, NextHit) :-
 	prop(Unit, speed, Speed),
 	Tick is 0.01,
 	MovePerTick is Speed * Tick,
-	NextHit is Distance / MovePerTick.
+	NextHit is Distance / MovePerTick,
+	print_message(informational, rangeMessage(EUnit, Unit, ER, R, NextHit)).
 
 %% Unit hits first
 rangeChecker(EUnit, Unit, ENextHit, 0) :-
@@ -261,13 +225,15 @@ rangeChecker(EUnit, Unit, ENextHit, 0) :-
 	prop(EUnit, speed, Speed),
 	Tick is 0.01,
 	MovePerTick is Speed * Tick,
-	ENextHit is Distance / MovePerTick.
+	ENextHit is Distance / MovePerTick,
+	print_message(informational, rangeMessage(Unit, EUnit, R, ER, ENextHit)).
 
 %% Same range
 rangeChecker(EUnit, Unit, 0, 0) :-
 	prop(EUnit, range, ER),
 	prop(Unit, range, R),
-	R = ER.
+	R = ER,
+	print_message(informational, rangeMessage(Unit, EUnit, R, ER, 0)).
 
 
 %% battleSimulation(Unit, NumberOfUnits, L, MinAvailable, GasAvailable, R). is true when:
@@ -279,6 +245,7 @@ rangeChecker(EUnit, Unit, 0, 0) :-
 %% R is a list of elements. Each element has unit, UnitsLeft of the player
 battleSimulation(_, _, [], _, _, []).
 battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R]) :-
+	print_message(banner, enteringBattleMessage(EUnitLeft, EUnit, Unit)),
 	buildUnits(Unit, MinAvailable, GasAvailable, UnitLeft),
 	print_message(informational, buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)),
 	rangeChecker(EUnit, Unit, ENextHit, NextHit),
@@ -292,10 +259,17 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R
 
 
 
-
+prolog:message(enteringBattleMessage(EUnitLeft, EUnit, Unit)) --> 
+        [ '\n~w is entering battle against the enemies ~D ~w'-[Unit, EUnitLeft, EUnit] ].
 
 prolog:message(buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)) --> 
-        [ 'Built ~D ~ws from ~D Minerals ~D Gas)'-[UnitLeft, Unit, MinAvailable, GasAvailable] ].
+        [ 'Built ~D ~ws from ~D Minerals ~D Gas'-[UnitLeft, Unit, MinAvailable, GasAvailable] ].
+
+prolog:message(rangeMessage(Unit1, Unit2, Unit1Range, Unit2Range, Unit2AttackTime)) --> 
+        [ '~w has ~D Range \n ~w has ~D Range \n It will take ~5fms for ~w to get in range.'-[Unit1, Unit1Range, Unit2, Unit2Range, Unit2AttackTime, Unit2] ].
+
+%% prolog:message(attackMessage(Unit1, NumUnit1, Unit2, Damage)) --> 
+%%         [ '~D ~ws attack ~w for ~D'-[NumUnit1, Unit1, Unit2, Unit2Range, Unit2AttackTime, Unit2] ].
 
 
 %% getBonusAttack will take in a defender and Attacker and return the Attacker's BonusAttack against the Defender in BonusAttack.

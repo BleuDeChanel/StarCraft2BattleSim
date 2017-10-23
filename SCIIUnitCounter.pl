@@ -48,7 +48,7 @@
 %% Print out more stats from battles as they happen (DONE)
 %% Import KB from other files
 
-main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, GasToMinRatio, Result) :-
+main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, GasToMinRatio) :-
 	validUnit(Unit),
 	validRace(Race),
 	validNumOfUnits(NumberOfUnits),
@@ -58,7 +58,9 @@ main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, GasToMinRatio, Resul
 	filterUserUnitInOrder(Race, MinAvailable, GasAvailable, ListOfPossibleUnits),
 	battleSimulation(Unit, NumberOfUnits, ListOfPossibleUnits, MinAvailable, GasAvailable, BattleResult),
 	costEfficiencyList2(BattleResult, MinAvailable, GasAvailable, GasToMinRatio, CELResult),
-	merge_sort(CELResult, Result).
+	merge_sort(CELResult, Result),
+	print_message(banner, resourceBanner()),
+	prettyPrint(Result).
 
 prolog:message(enteringBattleMessage(EUnitLeft, EUnit, Unit)) -->
         [ '\n ====================SIMULATION START====================  \n ~w is entering battle against the enemies ~D ~ws'-[Unit, EUnitLeft, EUnit] ].
@@ -121,7 +123,17 @@ prolog:message(invalidGasToMinRatio()) -->
 prolog:message(noUnit(Unit)) -->
 		[ 'No ~w can be built.'-[Unit] ].
 
+prolog:message(prettyPrintMessage(Unit, MineralLeft, GasLeft, ResourcesLeft, UnitsLeft, EnemyUnitsLeft)) -->
+        [ 'With ~w you saved: ~D minerals, ~D gas, ~1f resources total(gas to minerals based on your ratio). ~D ~ws survived. And ~D Enemey units left.'-[Unit, MineralLeft, GasLeft, ResourcesLeft, UnitsLeft, Unit, EnemyUnitsLeft] ].
 
+prolog:message(resourceBanner()) -->
+        [ '==========RESOURCE EFFICIENCY SUMMARY=========='-[] ].
+
+%% prettyPrint will print the results nicely for the user
+prettyPrint([]).
+prettyPrint([(Unit, MineralLeft, GasLeft, ResourcesLeft, UnitsLeft, EnemyUnitsLeft)| T]) :-
+	print_message(informational, prettyPrintMessage(Unit, MineralLeft, GasLeft, ResourcesLeft, UnitsLeft, EnemyUnitsLeft)),
+	prettyPrint(T).
 
 %% Checks if unit is valid
 %% validUnit(Unit) is true if Unit is in our KB

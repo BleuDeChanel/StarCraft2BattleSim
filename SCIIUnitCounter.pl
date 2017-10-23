@@ -434,8 +434,6 @@ goToNextAttack(NextHit, NextHit, 0, 0).
 %% Tests:
 %% tick(zealot,zealot,70,60,0,0,(100,50),(100,50),R).
 
-
-
 %% No Enemies left!!! Record result and exit tick.
 tick(EUnit, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,UnitLeft,0)) :-
 	EUnitLeft =< 0,
@@ -505,56 +503,6 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 	print_message(informational, nextAttackMessage(EUnit,Unit,NewENextHit, NewNextHit)),
 	tick(EUnit, Unit, NewEUnitLeft, NewUnitLeft, NewENextHit, NewNextHit, NewEDamageUnit, NewDamageUnit, R).
 
-
-% damage calculation
-% # of unit * ( (basic attack + bonus) - Earmour / cooldown ) = Total dps
-
-
-%% counter (
-%%	Get info about enemies unit
-%%	Relevant info: Mineral, Gas, HP, Shields, Armour, Groundattack, BonusAttack, BonusType(s),Cooldown, Range
-
-%%	L = Get possible units for us from race and ???
-%%	R1 = List of names of the unit
-%%	R2 = resources left after battle of unit
-
-%%	damageCalculation(L, R1, R2) :-
-%%		Head do calculation put result in R.
-
-
-%%		BR  = battle result of this units damage calculation
-%%		R is our result list which will have the unit and its total resources after battle
-%%		resource effiecieny calculation(BR, R)
-%%		H how many units we have left = ceiling(HP total of our units after battle/hp of one unit)
-%%		H*cost of one unit = total resources after battle.
-
-%%		damageCalculation(T,R)
-
-
-%%	find highest resources left(R).
-
-%% )
-
-%% Before battle calculation we have list L of units we can build
-%% Foreach unit in L
-%% Build max number of units
-%% Do damageCalculation against enemies units (lots of smaller parts/functions)
-%% Record results
-
-%% The result of the battle calculation is a list L where each element in L is units name and total hp left after battle
-
-
-%% After doing each unit and getting results calculate resource effiecieny based on units left and this units cost.
-
-%% Taking into account Range:
-%% They get extra number of attacks based on how much higher the unit's range is compared to it's opponents.
-%% # of units*attack = bonus damage from range.
-%% At beginning of fight subtract bonus damage from range from enemy with lowers range total hp pool.
-
-%% (Basic attack + bonus atk - armour)/CD * number of units is DPS.
-
-
-% Jin Min trying to wrap around his head.
 
 % Res is 1(true) if the N is greater than 0, meaning User can make the
 % Unit.
@@ -696,15 +644,4 @@ merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
 	UnitsLeft2 is 0,
 	EUnitsLeft>=EUnitsLeft2,
 	merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],T2,T).
-
-
-
-
-
-
-
-
-
-
-
 

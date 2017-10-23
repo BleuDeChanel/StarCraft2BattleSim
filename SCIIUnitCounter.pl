@@ -201,10 +201,14 @@ inspect(U, Mineral, Gas, Armour, HP, Shield, GroundAttack, BonusAttack, BonusTyp
 inspectRace(R, L) :-
 	findall(X0, prop(X0, race, R), L).
 
-%% matchOne(L1, L2) is true if one of L1's elements is in L2.
-matchOne([H1|T2], [H1|T2]).
-matchOne([H1|T2], [H2|T2]) :-
-	dif(H1,H2),
+
+
+%% intersects(L1, L2) is true if one of L1's elements is in L2.
+intersects([H|_],List) :-
+    member(H,List),
+    !.
+intersects([_|T],List) :-
+    intersects(T,List).
 
 
 
@@ -306,7 +310,7 @@ getBonusAttack(Attacker, Defender, BonusAttack) :-
 	BonusAttack > 0,
 	prop(Attacker, bonusType, BonusTypes),
 	prop(Defender, attributeModifier, AttributeModifiers),
-	matchOne(BonusTypes, AttributeModifiers).
+	intersects(BonusTypes, AttributeModifiers).
 
 %% No match in BonusTypes and AttributeModifiers so the bonusAttack is 0
 getBonusAttack(Attacker, Defender, 0) :-
@@ -314,7 +318,7 @@ getBonusAttack(Attacker, Defender, 0) :-
 	BonusAttack > 0,
 	prop(Attacker, bonusType, BonusTypes),
 	prop(Defender, attributeModifier, AttributeModifiers),
-	\+ matchOne(BonusTypes, AttributeModifiers).
+	\+ intersects(BonusTypes, AttributeModifiers).
 
 
 

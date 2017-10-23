@@ -235,7 +235,6 @@ prop(queen, bonusType, []).
 prop(queen, coolDown, 0.71).
 prop(queen, range, 5).
 prop(queen, speed, 1.31).
-
 prop(zergling, mineral, 25).
 prop(zergling, gas, 0).
 prop(zergling, armour, 0).
@@ -349,7 +348,7 @@ prop(ultralisk, speed, 4.13).
 %% Add enemy casualties to result?
 
 %% Print out more stats from battles as they happen (DONE)
-%% Import KB from other files 
+%% Import KB from other files
 
 main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, GasToMinRatio, Result) :-
 	validUnit(Unit),
@@ -417,9 +416,11 @@ prolog:message(invalidMinerals()) -->
 prolog:message(invalidGas()) -->
         [ 'Please enter a number greater than or equal to 0 for Gas Available.'-[] ].
 
+prolog:message(noUnit(Unit)) -->
+	[ 'No ~w can be built.'-[Unit] ].
 
 
-%% Checks if unit is valid 
+%% Checks if unit is valid
 %% validUnit(Unit) is true if Unit is in our KB
 validUnit(Unit) :-
 	prop(Unit,race,_).
@@ -430,9 +431,9 @@ validUnit(Unit) :-
 
 %% Checks if race is valid
 %% validRace(Race) is true if Race is one of protoss,zerg or terran
-validRace(Race) :- 
+validRace(Race) :-
 	member(Race, [terran,protoss,zerg]).
-validRace(Race) :- 
+validRace(Race) :-
 	\+ member(Race, [terran,protoss,zerg]),
 	print_message(error, invalidRace(Race)),
 	false.
@@ -446,17 +447,17 @@ validNumOfUnits(NumberOfUnits) :-
 	false.
 
 %% Checks if valid amount of minerals
-validMinerals(MinAvailable) :- 
+validMinerals(MinAvailable) :-
 	MinAvailable > 0.
-validMinerals(MinAvailable) :- 
+validMinerals(MinAvailable) :-
 	\+ MinAvailable > 0,
 	print_message(error, invalidMinerals()),
 	false.
-	
+
 %% Checks if valid amount of gas
-validGas(GasAvailable) :- 
+validGas(GasAvailable) :-
 	GasAvailable >= 0.
-validGas(GasAvailable) :- 
+validGas(GasAvailable) :-
 	\+ GasAvailable >= 0,
 	print_message(error, invalidGas()),
 	false.
@@ -850,7 +851,10 @@ availableUnit(Unit, MinAvailable, GasAvailable, Res) :- buildUnits(Unit, MinAvai
 % Builds a list of units that are available to make from the input list
 %% Example availableUnits(500,0,[zealot,immortal,probe,colossus,stalker],[],R). gives R = [probe, zealot]
 availableUnits(_, _, [], L, L).
-availableUnits(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1) -> availableUnits(MinAvailable, GasAvailable, T, [H|Acc], Result); availableUnits(MinAvailable,GasAvailable,T,Acc,Result).
+availableUnits(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1) ->
+availableUnits(MinAvailable, GasAvailable, T, [H|Acc], Result);
+print_message(informational, noUnit(H)),
+availableUnits(MinAvailable,GasAvailable,T,Acc,Result).
 
 % Filters a list of units in reverse order according to the race and
 % resources available.

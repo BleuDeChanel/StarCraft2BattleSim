@@ -459,43 +459,43 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R
 	battleSimulation(EUnit, OriginalEUnitLeft, T, MinAvailable, GasAvailable, R).
 
 
-prolog:message(enteringBattleMessage(EUnitLeft, EUnit, Unit)) --> 
+prolog:message(enteringBattleMessage(EUnitLeft, EUnit, Unit)) -->
         [ '\n ====================SIMULATION START====================  \n ~w is entering battle against the enemies ~D ~ws'-[Unit, EUnitLeft, EUnit] ].
 
-prolog:message(buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)) --> 
+prolog:message(buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)) -->
         [ 'BUILD UNITS: Built ~D ~ws from ~D Minerals ~D Gas'-[UnitLeft, Unit, MinAvailable, GasAvailable] ].
 
-prolog:message(rangeMessage(Unit1, Unit2, Unit1Range, Unit2Range, Unit2AttackTime)) --> 
+prolog:message(rangeMessage(Unit1, Unit2, Unit1Range, Unit2Range, Unit2AttackTime)) -->
         [ 'RANGE CHECK: ~w has ~D Range. ~w has ~D Range. \n It will take ~5fms for ~w to get in range.'-[Unit1, Unit1Range, Unit2, Unit2Range, Unit2AttackTime, Unit2] ].
 
-prolog:message(battleBanner()) --> 
+prolog:message(battleBanner()) -->
         [ '====================BATTLE START===================='-[] ].
 
-prolog:message(attackMessage(Unit1, NumUnit1, SingleAttack, Unit2, Damage)) --> 
+prolog:message(attackMessage(Unit1, NumUnit1, SingleAttack, Unit2, Damage)) -->
         [ '~D ~ws attack ~w for ~D each. ~D Total Damage'-[NumUnit1, Unit1, Unit2, SingleAttack, Damage] ].
 
-prolog:message(attackBanner()) --> 
+prolog:message(attackBanner()) -->
         [ '==========ATTACK=========='-[] ].
 
-prolog:message(defendMessage(Defender, DefenderUnitsLeft, (TankHP,TankShield), Damage)) --> 
+prolog:message(defendMessage(Defender, DefenderUnitsLeft, (TankHP,TankShield), Damage)) -->
         [ '~w takes ~D damage. ~D ~ws left. Focused unit has ~D HP ~D Shield left.'-[Defender, Damage, DefenderUnitsLeft, Defender, TankHP, TankShield] ].
 
-prolog:message(defendBanner()) --> 
+prolog:message(defendBanner()) -->
         [ '==========DEFEND=========='-[] ].
 
-prolog:message(defenderDiedMessage(Defender, DefenderUnitsLeft, Damage, OverDamage)) --> 
+prolog:message(defenderDiedMessage(Defender, DefenderUnitsLeft, Damage, OverDamage)) -->
         [ '~w took ~D damage and died. ~D ~ws left. Leftover ~D damage passed on to next target, if it exists.'-[Defender, Damage,  DefenderUnitsLeft, Defender, OverDamage] ].
 
-prolog:message(nextAttackMessage(EUnit,Unit,NewENextHit, NewNextHit)) --> 
+prolog:message(nextAttackMessage(EUnit,Unit,NewENextHit, NewNextHit)) -->
         [ '~w can attack in ~5fms. ~w can attack in ~5fms.'-[Unit, NewNextHit, EUnit, NewENextHit] ].
 
-prolog:message(nextAttackBanner()) --> 
+prolog:message(nextAttackBanner()) -->
         [ '==========JUMP TO NEXT ATTACK=========='-[] ].
 
-prolog:message(battleEnd(DeadUnit, AliveUnit, AliveLeft)) --> 
+prolog:message(battleEnd(DeadUnit, AliveUnit, AliveLeft)) -->
         [ 'All ~ws are dead. There are ~D ~ws left.'-[DeadUnit, AliveLeft, AliveUnit] ].
 
-prolog:message(battleEndBanner()) --> 
+prolog:message(battleEndBanner()) -->
         [ '==========BATTLE END=========='-[] ].
 
 %% getBonusAttack will take in a defender and Attacker and return the Attacker's BonusAttack against the Defender in BonusAttack.
@@ -850,12 +850,12 @@ costEfficiencyList([(Unit,UnitsLeft)|T],MinAv,GasAv,GasToMin,[R1|R]) :-
 	costEfficiencyList(T,MinAv,GasAv,GasToMin,R).
 
 
-% find the most cost efficient uni; Not working properly atm...
-min([],X,X,_,_).
-min([H|T],M,X,GasToMin,UnitsLeft) :-
-costEfficiency(H, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit1Cost,UnitsLeft)),
-costEfficiency(M, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit2Cost,UnitsLeft)),
-Unit1Cost >= Unit2Cost -> min(T,H,X,GasToMin,UnitsLeft);min(T,M,X,GasToMin,UnitsLeft).
+% find the most cost efficient unit; Not working properly atm...
+max([],X,X,_).
+max([(Unit,UnitsLeft)|T],(M,MLeft),X,GasToMin,MinAv,GasAv) :-
+costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit1Cost,UnitsLeft)),
+costEfficiency(M, GasToMin, MLeft, MinAv, GasAv, (M,MinLeft,GasLeft,Unit2Cost,MLeft)),
+Unit1Cost =< Unit2Cost -> max(T,Unit,X,GasToMin,MinAv,GasAv);max(T,M,X,GasToMin,MinAv,GasAv).
 
-costEfficientUnit([(H,UnitsLeft)|T],Unit,GasToMin) :- min(T,H,Unit,GasToMin,UnitsLeft).
+costEfficientUnit([H|T],Unit,GasToMin,MinAv,GasAv) :- max(T,H,Unit,GasToMin,MinAv,GasAv).
 

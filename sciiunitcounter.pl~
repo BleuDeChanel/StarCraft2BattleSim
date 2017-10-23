@@ -342,6 +342,9 @@ prop(ultralisk, speed, 4.13).
 %% Make sure NumberOfUnits > 0.
 
 
+%% If Armour makes the attack of single unit go under 0.5. Make the BasicAttack do 0.5 damage. It is the minimum damage
+
+
 %% Use Battle Result to get resource effiecieny of each battle which will be R.
 %% Add enemy casualties to result?
 
@@ -439,7 +442,7 @@ rangeChecker(EUnit, Unit, 0, 0) :-
 %% L is a list of units this will simulate battle for
 %% MinAvailable is how many minerals you have available
 %% GasAvailable is how much gas you have available
-%% R is a list of elements. Each element has unit, UnitsLeft of the player
+%% R is a list of elements. Each element has (Unit, UnitsLeft of the player, Enemy Units Left)
 battleSimulation(_, _, [], _, _, []).
 battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R]) :-
 	print_message(banner, enteringBattleMessage(EUnitLeft, EUnit, Unit)),
@@ -451,23 +454,49 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R
 	prop(EUnit, shield, EShield),
 	prop(Unit, shield, Shield),
 	OriginalEUnitLeft is EUnitLeft,
-	tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, (HP, Shield), (EHP, EShield), R1),
+	print_message(banner, battleBanner()),
+	tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, (EHP, EShield), (HP, Shield), R1),
 	battleSimulation(EUnit, OriginalEUnitLeft, T, MinAvailable, GasAvailable, R).
 
 
-
 prolog:message(enteringBattleMessage(EUnitLeft, EUnit, Unit)) -->
-        [ '\n~w is entering battle against the enemies ~D ~w'-[Unit, EUnitLeft, EUnit] ].
+        [ '\n ====================SIMULATION START====================  \n ~w is entering battle against the enemies ~D ~ws'-[Unit, EUnitLeft, EUnit] ].
 
 prolog:message(buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)) -->
-        [ 'Built ~D ~ws from ~D Minerals ~D Gas'-[UnitLeft, Unit, MinAvailable, GasAvailable] ].
+        [ 'BUILD UNITS: Built ~D ~ws from ~D Minerals ~D Gas'-[UnitLeft, Unit, MinAvailable, GasAvailable] ].
 
 prolog:message(rangeMessage(Unit1, Unit2, Unit1Range, Unit2Range, Unit2AttackTime)) -->
-        [ '~w has ~D Range \n ~w has ~D Range \n It will take ~5fms for ~w to get in range.'-[Unit1, Unit1Range, Unit2, Unit2Range, Unit2AttackTime, Unit2] ].
+        [ 'RANGE CHECK: ~w has ~D Range. ~w has ~D Range. \n It will take ~5fms for ~w to get in range.'-[Unit1, Unit1Range, Unit2, Unit2Range, Unit2AttackTime, Unit2] ].
 
-%% prolog:message(attackMessage(Unit1, NumUnit1, Unit2, Damage)) -->
-%%         [ '~D ~ws attack ~w for ~D'-[NumUnit1, Unit1, Unit2, Unit2Range, Unit2AttackTime, Unit2] ].
+prolog:message(battleBanner()) -->
+        [ '====================BATTLE START===================='-[] ].
 
+prolog:message(attackMessage(Unit1, NumUnit1, SingleAttack, Unit2, Damage)) -->
+        [ '~D ~ws attack ~w for ~D each. ~D Total Damage'-[NumUnit1, Unit1, Unit2, SingleAttack, Damage] ].
+
+prolog:message(attackBanner()) -->
+        [ '==========ATTACK=========='-[] ].
+
+prolog:message(defendMessage(Defender, DefenderUnitsLeft, (TankHP,TankShield), Damage)) -->
+        [ '~w takes ~D damage. ~D ~ws left. Focused unit has ~D HP ~D Shield left.'-[Defender, Damage, DefenderUnitsLeft, Defender, TankHP, TankShield] ].
+
+prolog:message(defendBanner()) -->
+        [ '==========DEFEND=========='-[] ].
+
+prolog:message(defenderDiedMessage(Defender, DefenderUnitsLeft, Damage, OverDamage)) -->
+        [ '~w took ~D damage and died. ~D ~ws left. Leftover ~D damage passed on to next target, if it exists.'-[Defender, Damage,  DefenderUnitsLeft, Defender, OverDamage] ].
+
+prolog:message(nextAttackMessage(EUnit,Unit,NewENextHit, NewNextHit)) -->
+        [ '~w can attack in ~5fms. ~w can attack in ~5fms.'-[Unit, NewNextHit, EUnit, NewENextHit] ].
+
+prolog:message(nextAttackBanner()) -->
+        [ '==========JUMP TO NEXT ATTACK=========='-[] ].
+
+prolog:message(battleEnd(DeadUnit, AliveUnit, AliveLeft)) -->
+        [ 'All ~ws are dead. There are ~D ~ws left.'-[DeadUnit, AliveLeft, AliveUnit] ].
+
+prolog:message(battleEndBanner()) -->
+        [ '==========BATTLE END=========='-[] ].
 
 %% getBonusAttack will take in a defender and Attacker and return the Attacker's BonusAttack against the Defender in BonusAttack.
 %% Note: Currently it does not support a unit having different bonusAttacks for different Defenders
@@ -507,10 +536,8 @@ attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 	getBonusAttack(Attacker, Defender, BonusAttack),
 	prop(Defender, armour, DefenderArmour),
 	SingleAttack is BasicAttack + BonusAttack - DefenderArmour,
-	Damage is AttackerUnitleft * SingleAttack.
-
-
-
+	Damage is AttackerUnitleft * SingleAttack,
+	print_message(informational, attackMessage(Attacker, AttackerUnitleft, SingleAttack, Defender, Damage)).
 
 %% NOTE: Shield will use same Armour as its unit's Armour.
 %% It should have it's own armour value.
@@ -524,15 +551,17 @@ attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 %%			EDamagedUnit's HP = EDamagedUnit's HP - Damage. If 0, dead. EUnitLeft - 1. EDamagedUnit HP set to full.
 %%			Damage = Damage - TempHP.
 %%			Repeat till Damage is 0.
-
 %% Base case
-%% Defender doesn't die. Set the New values.
+%% Defender lives. Set the New values.
 %% Case 1: Shield doesn't break
 %% Tests:
 %% defend(10, zealot, (100,50),1,(NewHP, NewShield), NewLeft).
-defend(Damage, _, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (DefenderDamagedUnitHP, NewDefenderDamagedUnitShield), DefenderUnitLeft) :-
+defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (DefenderDamagedUnitHP, NewDefenderDamagedUnitShield), DefenderUnitLeft) :-
+	dif(DefenderUnitLeft,0),
+	dif(Damage,0),
 	NewDefenderDamagedUnitShield is DefenderDamagedUnitShield - Damage,
-	NewDefenderDamagedUnitShield >= 0.
+	NewDefenderDamagedUnitShield >= 0,
+	print_message(informational, defendMessage(Defender, DefenderUnitLeft, (DefenderDamagedUnitHP,NewDefenderDamagedUnitShield), Damage)).
 
 
 %% Case 2: Shield does break, Unit lives
@@ -541,12 +570,15 @@ defend(Damage, _, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUn
 %% defend(75, zealot, (100,0),1,(NewHP, NewShield), NewLeft).
 %% defend(75, zealot, (100,5),1,(NewHP, NewShield), NewLeft).
 
-defend(Damage, _, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, 0), DefenderUnitLeft) :-
+defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, 0), DefenderUnitLeft) :-
+	dif(DefenderUnitLeft,0),
+	dif(Damage,0),
 	NewDefenderDamagedUnitShield is DefenderDamagedUnitShield - Damage,
 	NewDefenderDamagedUnitShield < 0,
 	NewDamage is Damage - DefenderDamagedUnitShield,
 	NewDefenderDamagedUnitHP is DefenderDamagedUnitHP - NewDamage,
-	NewDefenderDamagedUnitHP > 0.
+	NewDefenderDamagedUnitHP > 0,
+	print_message(informational, defendMessage(Defender, DefenderUnitLeft, (NewDefenderDamagedUnitHP,0), Damage)).
 
 %% Case 3: Defender Dies
 %% Reduce Total Damage left
@@ -560,6 +592,8 @@ defend(Damage, _, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUn
 %% defend(250, zealot, (100,50),2,(NewHP, NewShield), NewLeft).		Expect: NewHP = 50  NewShield = 0  NewLeft = 1
 %% defend(300, zealot, (100,50),2,(NewHP, NewShield), NewLeft).		Expect: NewHP = 100 NewShield = 50 NewLeft = 0
 defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, NewDefenderDamagedUnitShield), NewDefenderUnitLeft) :-
+	dif(DefenderUnitLeft,0),
+	dif(Damage,0),
 	TempShield is DefenderDamagedUnitShield - Damage,
 	TempShield < 0,
 	NewDamage is Damage - DefenderDamagedUnitShield,
@@ -569,13 +603,23 @@ defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), Def
 	prop(Defender, shield, FreshShield),
 	prop(Defender, hp, FreshHP),
 	TempUnitLeft is DefenderUnitLeft - 1,
+	DamageTaken is Damage - NewNewDamage,
+	print_message(informational, defenderDiedMessage(Defender, TempUnitLeft, DamageTaken, NewNewDamage)),
 	defend(NewNewDamage, Defender, (FreshHP, FreshShield), TempUnitLeft, (NewDefenderDamagedUnitHP, NewDefenderDamagedUnitShield), NewDefenderUnitLeft).
+
+
+%% After unit died in defence, and 0 units left Done.
+defend(_, _, (_, _), 0, (0, 0), 0).
+
+%% 0 damage left after unit died, defence is over
+defend(0, _, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), TempUnitLeft, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), TempUnitLeft) :-
+	dif(TempUnitLeft,0).
 
 
 %% Jumps to next attack
 
 %% No one can hit. Jump to next attack. Cases: Enemey is next hit, You're next hit, you both are next hit(same ENextHit and NextHit)
-%% Enemy is next
+%% Enemy is next hit
 goToNextAttack(ENextHit, NextHit, 0, NewNextHit) :-
 	dif(ENextHit,NextHit),
 	ENextHit < NextHit,
@@ -614,24 +658,32 @@ goToNextAttack(NextHit, NextHit, 0, 0).
 
 
 %% No Enemies left!!! Record result and exit tick.
-tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,UnitLeft,0)) :-
+tick(EUnit, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,UnitLeft,0)) :-
 	EUnitLeft =< 0,
-	UnitLeft > 0.
+	UnitLeft > 0,
+	print_message(banner, battleEndBanner()),
+	print_message(informational, battleEnd(EUnit, Unit, UnitLeft)).
 
 %% No Units left :( Record result and exit tick.
-tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,0,EUnitLeft)) :-
-	UnitLeft =< 0.
+tick(EUnit, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,0,EUnitLeft)) :-
+	UnitLeft =< 0,
+	print_message(banner, battleEndBanner()),
+	print_message(informational, battleEnd(Unit, EUnit, EUnitLeft)).
 
 %% Unit can hit
 tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, 0, EDamagedUnit, DamagedUnit, R) :-
 	EUnitLeft > 0,
 	UnitLeft > 0,
 	ENextHit > 0,
+	print_message(banner, attackBanner()),
 	attack(Unit, UnitLeft, EUnit, Damage),
+	print_message(banner, defendBanner()),
 	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
 	prop(Unit, coolDown, CD),
 	CDms is CD / 0.01,
 	goToNextAttack(ENextHit, CDms, NewENextHit, NewNextHit),
+	print_message(banner, nextAttackBanner()),
+	print_message(informational, nextAttackMessage(EUnit,Unit,NewENextHit, NewNextHit)),
 	tick(EUnit, Unit, NewEUnitLeft, UnitLeft, NewENextHit, NewNextHit, NewEDamageUnit, DamagedUnit, R).
 
 
@@ -640,11 +692,15 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, NextHit, EDamagedUnit, DamagedUnit, R)
 	EUnitLeft > 0,
 	UnitLeft > 0,
 	NextHit > 0,
+	print_message(banner, attackBanner()),
 	attack(EUnit, EUnitLeft, Unit, Damage),
+	print_message(banner, defendBanner()),
 	defend(Damage, Unit, DamagedUnit, UnitLeft, NewDamageUnit, NewUnitLeft),
 	prop(EUnit, coolDown, ECD),
 	ECDms is ECD / 0.01,
 	goToNextAttack(ECDms, NextHit, NewENextHit, NewNextHit),
+	print_message(banner, nextAttackBanner()),
+	print_message(informational, nextAttackMessage(EUnit,Unit,NewENextHit, NewNextHit)),
 	tick(EUnit, Unit, EUnitLeft, NewUnitLeft, NewENextHit, NewNextHit, EDamagedUnit, NewDamageUnit, R).
 
 %% Both units can hit
@@ -653,15 +709,21 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, NextHit, EDamagedUnit, DamagedUnit, R)
 tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 	EUnitLeft > 0,
 	UnitLeft > 0,
+	print_message(banner, attackBanner()),
 	attack(EUnit, EUnitLeft, Unit, EDamage),
+	print_message(banner, attackBanner()),
 	attack(Unit, UnitLeft, EUnit, Damage),
+	print_message(banner, defendBanner()),
 	defend(EDamage, Unit, DamagedUnit, UnitLeft, NewDamageUnit, NewUnitLeft),
+	print_message(banner, defendBanner()),
 	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
 	prop(EUnit, coolDown, ECD),
 	prop(Unit, coolDown, CD),
 	ECDms is ECD / 0.01,
 	CDms is CD / 0.01,
 	goToNextAttack(ECDms,CDms,NewENextHit,NewNextHit),
+	print_message(banner, nextAttackBanner()),
+	print_message(informational, nextAttackMessage(EUnit,Unit,NewENextHit, NewNextHit)),
 	tick(EUnit, Unit, NewEUnitLeft, NewUnitLeft, NewENextHit, NewNextHit, NewEDamageUnit, NewDamageUnit, R).
 
 
@@ -768,7 +830,7 @@ resourceSpent2(Unit, GasToMin, UnitsLeft, MineralSpent, GasSpent, ResourceSpent)
 	ResourceSpent is UnitsLeft*UnitCost.
 
 % Return the cost efficiency of the unit.
-costEfficiency((Unit,UnitsLeft), GasToMin,MinAv, GasAv, (Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft)) :-
+costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft)) :-
 	prop(Unit, mineral, MinCost),
 	prop(Unit,gas,GasCost),
 	UnitCost = MinCost+GasCost*GasToMin,
@@ -784,16 +846,16 @@ costEfficiency((Unit,UnitsLeft), GasToMin,MinAv, GasAv, (Unit,MinLeft,GasLeft,Re
 % Return the list of all units' cost efficiency
 costEfficiencyList([],_,_,_,[]).
 costEfficiencyList([(Unit,UnitsLeft)|T],MinAv,GasAv,GasToMin,[R1|R]) :-
-	costEfficiency((Unit,UnitsLeft), GasToMin, MinAv, GasAv, R1),
+	costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, R1),
 	costEfficiencyList(T,MinAv,GasAv,GasToMin,R).
 
 
-% find the most cost efficient unit Fatal Error... Fixed UnitsLeft...
-min([],X,X,_,_).
-min([H|T],M,X,GasToMin,UnitsLeft) :-
-costEfficiency(H, GasToMin, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit1Cost,UnitsLeft)),
-costEfficiency(M, GasToMin, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit2Cost,UnitsLeft)),
-Unit1Cost > Unit2Cost -> min(T,H,X,GasToMin,UnitsLeft);min(T,M,X,GasToMin,UnitsLeft).
+% find the most cost efficient unit; Not working properly atm...
+max([],X,X,_).
+max([(Unit,UnitsLeft)|T],(M,MLeft),X,GasToMin,MinAv,GasAv) :-
+costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit1Cost,UnitsLeft)),
+costEfficiency(M, GasToMin, MLeft, MinAv, GasAv, (M,MinLeft,GasLeft,Unit2Cost,MLeft)),
+Unit1Cost =< Unit2Cost -> max(T,Unit,X,GasToMin);max(T,M,X,GasToMin).
 
-costEfficientUnit([(H,UnitsLeft)|T],Unit,GasToMin) :- min(T,H,Unit,GasToMin,UnitsLeft).
+costEfficientUnit([H|T],Unit,GasToMin,MinAv,GasAv) :- max(T,H,Unit,GasToMin,MinAv,GasAv).
 

@@ -137,16 +137,29 @@ prop(colossus, speed, 3.15).
 % R is the result, a list of units with their resource effiecieny
 
 
-counter(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, R) :-
-	%% Make sure NumberOfUnits > 0.
-	dif(NumberOfUnits, 0),
-	%% Make sure Minerals are given
+%% TODO:
+%% Basic validation of inputs
+%% Make sure Unit is valid.
+%% Make sure race is valid.
+%% Make sure Minerals are given
+%% Make sure NumberOfUnits > 0.
+
+
+%% Use Battle Result to get resource effiecieny of each battle which will be R.
+
+
+%% Print out more stats from battles as they happen???
+%% Import KB from other files
+
+counter(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, BattleResult) :-
+	
+	NumberOfUnits > 0,
+	
 	MinAvailable > 49,
-	%% Make sure Unit is valid.
-	%% Make sure race is valid.
-	inspect(Unit, EMineral, EGas, EHP, EShield, EArmour, EGroundAttack, EBonusAttack, EBonusType, ECoolDown, ERange),
-	inspectRace(R, L),
-	battleSimulation(Unit, NumberOfUnits, L, MinAvailable, GasAvailable, R).
+	
+	inspectRace(Race, L),
+	battleSimulation(Unit, NumberOfUnits, L, MinAvailable, GasAvailable, BattleResult).
+	
 
 
 % U is the enemies unit.
@@ -187,6 +200,11 @@ inspect(U, Mineral, Gas, Armour, HP, Shield, GroundAttack, BonusAttack, BonusTyp
 
 inspectRace(R, L) :-
 	findall(X0, prop(X0, race, R), L).
+
+%% matchOne(L1, L2) is true if one of L1's elements is in L2.
+matchOne([H1|T2], [H1|T2]).
+matchOne([H1|T2], [H2|T2]) :-
+	dif(H1,H2),
 
 
 
@@ -247,31 +265,56 @@ rangeChecker(EUnit, Unit, 0, 0) :-
 	prop(Unit, range, R),
 	R = ER.
 
-	%% Take speed of slower unit (LOOK AT NOTES)
-
-
-
-
 
 %% battleSimulation(Unit, NumberOfUnits, L, MinAvailable, GasAvailable, R). is true when:
 %% Unit is the enemies unit
 %% EUnitLeft is the number of enemy units
-%% L is a list of units that are available to your race
+%% L is a list of units this will simulate battle for
 %% MinAvailable is how many minerals you have available
 %% GasAvailable is how much gas you have available
-%% R is a list of elements. Each element has unit, HP total left, and resources leftover.
-%% HP total left is the total HP left of the built units after going through battleSimulation with the enemy
-battleSimulation(EUnit, EUnitLeft, [], MinAvailable, GasAvailable, []).
-battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
+%% R is a list of elements. Each element has unit, UnitsLeft of the player
+battleSimulation(_, _, [], _, _, []).
+battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R]) :-
 	buildUnits(Unit, MinAvailable, GasAvailable, UnitLeft),
-
-	rangeChecker(Eunit, Unit, ENextHit, NextHit),
+	rangeChecker(EUnit, Unit, ENextHit, NextHit),
 	prop(EUnit, hp, EHP),
 	prop(Unit, hp, HP),
 	prop(EUnit, shield, EShield),
 	prop(Unit, shield, Shield),
+	OriginalEUnitLeft is EUnitLeft,
+	tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, (HP, Shield), (EHP, EShield), R1),
+	battleSimulation(EUnit, OriginalEUnitLeft, T, MinAvailable, GasAvailable, R).
 
-	tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, (HP, Shield), (EHP, EShield), R).
+
+
+
+
+
+%% getBonusAttack will take in a defender and Attacker and return the Attacker's BonusAttack against the Defender in BonusAttack.
+%% Note: Currently it does not support a unit having different bonusAttacks for different Defenders
+%% Gets Attacker's BonusType array and Defender's AttributeModifier array and see's if a value matches. 
+%% If a value matches set BonusAttack. If not return 0.
+
+%% Case: Attacker's bonusAttack is 0 for all. Return 0.
+getBonusAttack(Attacker, _, 0) :-
+	prop(Attacker, bonusAttack, BonusAttack),
+	BonusAttack = 0.
+
+%% Case: we have a match in BonusTypes and AttributeModifiers so the bonusAttack applies
+getBonusAttack(Attacker, Defender, BonusAttack) :-
+	prop(Attacker, bonusAttack, BonusAttack),
+	BonusAttack > 0,
+	prop(Attacker, bonusType, BonusTypes),
+	prop(Defender, attributeModifier, AttributeModifiers),
+	matchOne(BonusTypes, AttributeModifiers).
+
+%% No match in BonusTypes and AttributeModifiers so the bonusAttack is 0
+getBonusAttack(Attacker, Defender, 0) :-
+	prop(Attacker, bonusAttack, BonusAttack),
+	BonusAttack > 0,
+	prop(Attacker, bonusType, BonusTypes),
+	prop(Defender, attributeModifier, AttributeModifiers),
+	\+ matchOne(BonusTypes, AttributeModifiers).
 
 
 
@@ -282,7 +325,7 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
 %% attack(zealot, 500, zealot, D). Expect D = 7500
 attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 	prop(Attacker, groundAttack, BasicAttack),
-	BonusAttack is 0,
+	getBonusAttack(Attacker, Defender, BonusAttack),
 	prop(Defender, armour, DefenderArmour),
 	SingleAttack is BasicAttack + BonusAttack - DefenderArmour,
 	Damage is AttackerUnitleft * SingleAttack.
@@ -290,7 +333,7 @@ attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 
 
 
-%% NOTE: Shield will be added to HP, and use same Armour as it's unit's Armour.
+%% NOTE: Shield will use same Armour as its unit's Armour.
 %% It should have it's own armour value.
 
 %%	Looking into Attack
@@ -308,7 +351,7 @@ attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 %% Case 1: Shield doesn't break
 %% Tests:
 %% defend(10, zealot, (100,50),1,(NewHP, NewShield), NewLeft).
-defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (DefenderDamagedUnitHP, NewDefenderDamagedUnitShield), DefenderUnitLeft) :-
+defend(Damage, _, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (DefenderDamagedUnitHP, NewDefenderDamagedUnitShield), DefenderUnitLeft) :-
 	NewDefenderDamagedUnitShield is DefenderDamagedUnitShield - Damage,
 	NewDefenderDamagedUnitShield >= 0.
 
@@ -319,7 +362,7 @@ defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), Def
 %% defend(75, zealot, (100,0),1,(NewHP, NewShield), NewLeft).
 %% defend(75, zealot, (100,5),1,(NewHP, NewShield), NewLeft).
 
-defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, 0), DefenderUnitLeft) :-
+defend(Damage, _, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, 0), DefenderUnitLeft) :-
 	NewDefenderDamagedUnitShield is DefenderDamagedUnitShield - Damage,
 	NewDefenderDamagedUnitShield < 0,
 	NewDamage is Damage - DefenderDamagedUnitShield,
@@ -384,7 +427,7 @@ goToNextAttack(NextHit, NextHit, 0, 0).
 %% NextHit - Ticks till you can attack (attacks at 0)
 %% EDamagedUnit - Enemy's frontline unit, gets hit first and can have non full hp/shield
 %% DamagedUnit - your frontline unit, gets hit first and can have non full hp/shield
-%% R is result of battle, (Unit, TotalHP of your army left)
+%% R is result of battle, (Unit, UnitLeft)
 
 %% Tests:
 %% tick(zealot,zealot,70,60,0,0,(100,50),(100,50),R).
@@ -392,11 +435,9 @@ goToNextAttack(NextHit, NextHit, 0, 0).
 
 
 %% No Enemies left!!! Record result and exit tick.
-tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, (HP, Shield), (Unit,TotalHP)) :-
+tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,UnitLeft)) :-
 	EUnitLeft =< 0,
-	UnitLeft > 0,
-	prop(Unit, hp, FullHP),
-	TotalHP is FullHP * (UnitLeft - 1) + HP.
+	UnitLeft > 0.
 
 %% No Units left :( Record result and exit tick.
 tick(_, Unit, _, UnitLeft, _, _, _, _, (Unit,0)) :-

@@ -334,8 +334,9 @@ prop(ultralisk, speed, 4.13).
 % MinAvailable is how minerals you can spend on your army
 % GasAvailable is much gas you can spend on your army
 % Race is your Race, it will restrict what units you can build
-% GasToMinRatio is the value of gas to minerals you want
+% GasToMinRatio is the value of how much gas is worth in minerals. (Typical value is 3 or 3.5)
 % R is the result, a list of units with their resource effiecieny
+%% Such as (Unit, MineralLeft, GasLeft, ResourcesLeft(After conversion), UnitsLeft, EnemyUnitsLeft)
 
 
 %% TODO:
@@ -357,7 +358,7 @@ main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, GasToMinRatio, Resul
 	validNumOfUnits(NumberOfUnits),
 	validMinerals(MinAvailable),
 	validGas(GasAvailable),
-
+	validGasToMinRatio(GasToMinRatio),
 	filterUserUnitInOrder(Race, MinAvailable, GasAvailable, ListOfPossibleUnits),
 	battleSimulation(Unit, NumberOfUnits, ListOfPossibleUnits, MinAvailable, GasAvailable, BattleResult),
 	costEfficiencyList2(BattleResult, MinAvailable, GasAvailable, GasToMinRatio, CELResult),
@@ -417,6 +418,8 @@ prolog:message(invalidMinerals()) -->
 prolog:message(invalidGas()) -->
         [ 'Please enter a number greater than or equal to 0 for Gas Available.'-[] ].
 
+prolog:message(invalidGasToMinRatio()) -->
+        [ 'Please enter a number greater than 0 for Gas to Min Ratio.'-[] ].
 
 
 %% Checks if unit is valid 
@@ -459,6 +462,15 @@ validGas(GasAvailable) :-
 validGas(GasAvailable) :- 
 	\+ GasAvailable >= 0,
 	print_message(error, invalidGas()),
+	false.
+
+
+%% Checks if GasToMinRatio is greater than 0
+validGasToMinRatio(GasToMinRatio) :-
+	GasToMinRatio > 0.
+validGasToMinRatio(GasToMinRatio) :-
+	\+ GasToMinRatio > 0,
+	print_message(error, invalidGasToMinRatio()),
 	false.
 
 

@@ -307,6 +307,9 @@ prop(ultralisk, range, 1).
 prop(ultralisk, speed, 4.13).
 
 
+
+
+
 % Knowledgebase using Triple
 %
 % Properties we are keeping
@@ -335,31 +338,125 @@ prop(ultralisk, speed, 4.13).
 
 
 %% TODO:
-%% Basic validation of inputs
-%% Make sure Unit is valid.
-%% Make sure race is valid.
-%% Make sure Minerals are given
-%% Make sure NumberOfUnits > 0.
+%% Logs showing no unit built.
 
 
-%% If Armour makes the attack of single unit go under 0.5. Make the BasicAttack do 0.5 damage. It is the minimum damage
+%% (DONE) If Armour makes the attack of single unit go under 0.5. Make the BasicAttack do 0.5 damage. It is the minimum damage
 
 
 %% Use Battle Result to get resource effiecieny of each battle which will be R.
 %% Add enemy casualties to result?
 
-%% Print out more stats from battles as they happen???
-%% Import KB from other files
+%% Print out more stats from battles as they happen (DONE)
+%% Import KB from other files 
 
 main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, BattleResult) :-
-
-	NumberOfUnits > 0,
-
-	MinAvailable > 49,
+	validUnit(Unit),
+	validRace(Race),
+	validNumOfUnits(NumberOfUnits),
+	validMinerals(MinAvailable),
+	validGas(GasAvailable),
 
 	filterUserUnitInOrder(Race, MinAvailable, GasAvailable, ListOfPossibleUnits),
 	battleSimulation(Unit, NumberOfUnits, ListOfPossibleUnits, MinAvailable, GasAvailable, BattleResult).
 
+prolog:message(enteringBattleMessage(EUnitLeft, EUnit, Unit)) -->
+        [ '\n ====================SIMULATION START====================  \n ~w is entering battle against the enemies ~D ~ws'-[Unit, EUnitLeft, EUnit] ].
+
+prolog:message(buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)) -->
+        [ 'BUILD UNITS: Built ~D ~ws from ~D Minerals ~D Gas'-[UnitLeft, Unit, MinAvailable, GasAvailable] ].
+
+prolog:message(rangeMessage(Unit1, Unit2, Unit1Range, Unit2Range, Unit2AttackTime)) -->
+        [ 'RANGE CHECK: ~w has ~D Range. ~w has ~D Range. \n It will take ~5fms for ~w to get in range.'-[Unit1, Unit1Range, Unit2, Unit2Range, Unit2AttackTime, Unit2] ].
+
+prolog:message(battleBanner()) -->
+        [ '====================BATTLE START===================='-[] ].
+
+prolog:message(attackMessage(Unit1, NumUnit1, SingleAttack, Unit2, Damage)) -->
+        [ '~D ~ws attack ~w for ~1f each. ~1f Total Damage'-[NumUnit1, Unit1, Unit2, SingleAttack, Damage] ].
+
+prolog:message(attackBanner()) -->
+        [ '==========ATTACK=========='-[] ].
+
+prolog:message(defendMessage(Defender, DefenderUnitsLeft, (TankHP,TankShield), Damage)) -->
+        [ '~w takes ~1f damage. ~D ~ws left. Focused unit has ~1f HP ~1f Shield left.'-[Defender, Damage, DefenderUnitsLeft, Defender, TankHP, TankShield] ].
+
+prolog:message(defendBanner()) -->
+        [ '==========DEFEND=========='-[] ].
+
+prolog:message(defenderDiedMessage(Defender, DefenderUnitsLeft, Damage, OverDamage)) -->
+        [ '~w took ~1f damage and died. ~D ~ws left. Leftover ~1f damage passed on to next target, if it exists.'-[Defender, Damage,  DefenderUnitsLeft, Defender, OverDamage] ].
+
+prolog:message(nextAttackMessage(EUnit,Unit,NewENextHit, NewNextHit)) -->
+        [ '~w can attack in ~5fms. ~w can attack in ~5fms.'-[Unit, NewNextHit, EUnit, NewENextHit] ].
+
+prolog:message(nextAttackBanner()) -->
+        [ '==========JUMP TO NEXT ATTACK=========='-[] ].
+
+prolog:message(battleEnd(DeadUnit, AliveUnit, AliveLeft)) -->
+        [ 'All ~ws are dead. There are ~D ~ws left.'-[DeadUnit, AliveLeft, AliveUnit] ].
+
+prolog:message(battleEndBanner()) -->
+        [ '==========BATTLE END=========='-[] ].
+
+prolog:message(invalidUnit(Unit)) -->
+        [ '~w is not a unit in our Knowledge Base '-[Unit] ].
+
+prolog:message(invalidRace(Race)) -->
+        [ '~w is not a race in StarCraft 2'-[Race] ].
+
+prolog:message(invalidNumberOfUnits()) -->
+        [ 'Please enter a number greater than 0 for Enemy\'s number of units.'-[] ].
+
+prolog:message(invalidMinerals()) -->
+        [ 'Please enter a number greater than 0 for Minerals Available.'-[] ].
+
+prolog:message(invalidGas()) -->
+        [ 'Please enter a number greater than or equal to 0 for Gas Available.'-[] ].
+
+
+
+%% Checks if unit is valid 
+%% validUnit(Unit) is true if Unit is in our KB
+validUnit(Unit) :-
+	prop(Unit,race,_).
+validUnit(Unit) :-
+	\+ prop(Unit,race,_),
+	print_message(error, invalidUnit(Unit)),
+	false.
+
+%% Checks if race is valid
+%% validRace(Race) is true if Race is one of protoss,zerg or terran
+validRace(Race) :- 
+	member(Race, [terran,protoss,zerg]).
+validRace(Race) :- 
+	\+ member(Race, [terran,protoss,zerg]),
+	print_message(error, invalidRace(Race)),
+	false.
+
+%% Checks if NumberOfUnits is greater than 0.
+validNumOfUnits(NumberOfUnits) :-
+	NumberOfUnits > 0.
+validNumOfUnits(NumberOfUnits) :-
+	\+ NumberOfUnits > 0,
+	print_message(error, invalidNumberOfUnits()),
+	false.
+
+%% Checks if valid amount of minerals
+validMinerals(MinAvailable) :- 
+	MinAvailable > 0.
+validMinerals(MinAvailable) :- 
+	\+ MinAvailable > 0,
+	print_message(error, invalidMinerals()),
+	false.
+	
+%% Checks if valid amount of gas
+validGas(GasAvailable) :- 
+	GasAvailable >= 0.
+validGas(GasAvailable) :- 
+	\+ GasAvailable >= 0,
+	print_message(error, invalidGas()),
+	false.
 
 
 %% R is a race (Protoss, Zerg, Terran) of the User
@@ -458,46 +555,6 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R
 	tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, (EHP, EShield), (HP, Shield), R1),
 	battleSimulation(EUnit, OriginalEUnitLeft, T, MinAvailable, GasAvailable, R).
 
-
-prolog:message(enteringBattleMessage(EUnitLeft, EUnit, Unit)) -->
-        [ '\n ====================SIMULATION START====================  \n ~w is entering battle against the enemies ~D ~ws'-[Unit, EUnitLeft, EUnit] ].
-
-prolog:message(buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)) -->
-        [ 'BUILD UNITS: Built ~D ~ws from ~D Minerals ~D Gas'-[UnitLeft, Unit, MinAvailable, GasAvailable] ].
-
-prolog:message(rangeMessage(Unit1, Unit2, Unit1Range, Unit2Range, Unit2AttackTime)) -->
-        [ 'RANGE CHECK: ~w has ~D Range. ~w has ~D Range. \n It will take ~5fms for ~w to get in range.'-[Unit1, Unit1Range, Unit2, Unit2Range, Unit2AttackTime, Unit2] ].
-
-prolog:message(battleBanner()) -->
-        [ '====================BATTLE START===================='-[] ].
-
-prolog:message(attackMessage(Unit1, NumUnit1, SingleAttack, Unit2, Damage)) -->
-        [ '~D ~ws attack ~w for ~D each. ~D Total Damage'-[NumUnit1, Unit1, Unit2, SingleAttack, Damage] ].
-
-prolog:message(attackBanner()) -->
-        [ '==========ATTACK=========='-[] ].
-
-prolog:message(defendMessage(Defender, DefenderUnitsLeft, (TankHP,TankShield), Damage)) -->
-        [ '~w takes ~D damage. ~D ~ws left. Focused unit has ~D HP ~D Shield left.'-[Defender, Damage, DefenderUnitsLeft, Defender, TankHP, TankShield] ].
-
-prolog:message(defendBanner()) -->
-        [ '==========DEFEND=========='-[] ].
-
-prolog:message(defenderDiedMessage(Defender, DefenderUnitsLeft, Damage, OverDamage)) -->
-        [ '~w took ~D damage and died. ~D ~ws left. Leftover ~D damage passed on to next target, if it exists.'-[Defender, Damage,  DefenderUnitsLeft, Defender, OverDamage] ].
-
-prolog:message(nextAttackMessage(EUnit,Unit,NewENextHit, NewNextHit)) -->
-        [ '~w can attack in ~5fms. ~w can attack in ~5fms.'-[Unit, NewNextHit, EUnit, NewENextHit] ].
-
-prolog:message(nextAttackBanner()) -->
-        [ '==========JUMP TO NEXT ATTACK=========='-[] ].
-
-prolog:message(battleEnd(DeadUnit, AliveUnit, AliveLeft)) -->
-        [ 'All ~ws are dead. There are ~D ~ws left.'-[DeadUnit, AliveLeft, AliveUnit] ].
-
-prolog:message(battleEndBanner()) -->
-        [ '==========BATTLE END=========='-[] ].
-
 %% getBonusAttack will take in a defender and Attacker and return the Attacker's BonusAttack against the Defender in BonusAttack.
 %% Note: Currently it does not support a unit having different bonusAttacks for different Defenders
 %% Gets Attacker's BonusType array and Defender's AttributeModifier array and see's if a value matches.
@@ -524,7 +581,12 @@ getBonusAttack(Attacker, Defender, 0) :-
 	prop(Defender, attributeModifier, AttributeModifiers),
 	\+ intersects(BonusTypes, AttributeModifiers).
 
-
+%% checkSingleAttack(SingleAttack, R) is true when SingleAttack is less than 0.5 and R is 0.5
+%% or SingleAttack is greater than 0.5, R is SingleAttack
+checkSingleAttack(SingleAttack, 0.5) :-
+	SingleAttack < 0.5.
+checkSingleAttack(SingleAttack, SingleAttack) :-
+	SingleAttack >= 0.5.
 
 %% Gets Damage for this attack done by Attacker on Defender
 %% Damage = UnitLeft * ( ( BasicAttack + BonusAttack - EArmour) ).
@@ -536,8 +598,9 @@ attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 	getBonusAttack(Attacker, Defender, BonusAttack),
 	prop(Defender, armour, DefenderArmour),
 	SingleAttack is BasicAttack + BonusAttack - DefenderArmour,
-	Damage is AttackerUnitleft * SingleAttack,
-	print_message(informational, attackMessage(Attacker, AttackerUnitleft, SingleAttack, Defender, Damage)).
+	checkSingleAttack(SingleAttack, NewSingleAttack),
+	Damage is AttackerUnitleft * NewSingleAttack,
+	print_message(informational, attackMessage(Attacker, AttackerUnitleft, NewSingleAttack, Defender, Damage)).
 
 %% NOTE: Shield will use same Armour as its unit's Armour.
 %% It should have it's own armour value.

@@ -850,6 +850,27 @@ costEfficiencyList([(Unit,UnitsLeft)|T],MinAv,GasAv,GasToMin,[R1|R]) :-
 	costEfficiencyList(T,MinAv,GasAv,GasToMin,R).
 
 
+% Return the cost efficiency of the unit with EUnitsLeft
+costEfficiency2(Unit, GasToMin, UnitsLeft, MinAv, GasAv, EUnitsLeft, (Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)) :-
+	prop(Unit, mineral, MinCost),
+	prop(Unit,gas,GasCost),
+	UnitCost = MinCost+GasCost*GasToMin,
+	ResourceAv = MinAv+GasAv*GasToMin,
+	MineralSpent is UnitsLeft*MinCost,
+	GasSpent is UnitsLeft*GasCost,
+	ResourceSpent is UnitsLeft*UnitCost,
+	buildUnits(Unit,MinAv,GasAv,N),
+	MinLeft is MinAv-(N*MinCost-MineralSpent),
+	GasLeft is GasAv-(N*GasCost-GasSpent),
+	ResourceLeft is ResourceAv-((N*MinCost+N*GasCost*GasToMin)-ResourceSpent).
+
+% Return the list of all units' cost efficiency with EUnitsLeft
+costEfficiencyList2([],_,_,_,[]).
+costEfficiencyList2([(Unit,UnitsLeft,EUnitsLeft)|T],MinAv,GasAv,GasToMin,[R1|R]) :-
+	costEfficiency2(Unit, GasToMin, UnitsLeft, MinAv, GasAv,EUnitsLeft, R1),
+	costEfficiencyList2(T,MinAv,GasAv,GasToMin,R).
+
+
 % find the most cost efficient unit; Not working properly atm...
 max([],X,X,_).
 max([(Unit,UnitsLeft)|T],(M,MLeft),X,GasToMin,MinAv,GasAv) :-
@@ -858,4 +879,9 @@ costEfficiency(M, GasToMin, MLeft, MinAv, GasAv, (M,MinLeft,GasLeft,Unit2Cost,ML
 Unit1Cost =< Unit2Cost -> max(T,Unit,X,GasToMin,MinAv,GasAv);max(T,M,X,GasToMin,MinAv,GasAv).
 
 costEfficientUnit([H|T],Unit,GasToMin,MinAv,GasAv) :- max(T,H,Unit,GasToMin,MinAv,GasAv).
+
+
+
+
+
 

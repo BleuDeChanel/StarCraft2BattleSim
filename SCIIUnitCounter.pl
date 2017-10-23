@@ -858,11 +858,7 @@ filterUserUnitInOrder(Race, MinAvailable, GasAvailable, OrderedResult) :-
 	filterUserUnit(Race, MinAvailable, GasAvailable, Result),
 	reverse(Result, OrderedResult).
 
-
-% No longer use the TotalHPleft
-%
-% Calculate the mineral spent; lower the number, more efficient the
-% unit is.
+% Calculate the mineral spent; lower the number, more efficient the unit is.
 mineralSpent(Unit,UnitsLeft, MineralSpent) :-
 	prop(Unit,mineral, MinCost),
 	MineralSpent is UnitsLeft*MinCost.
@@ -933,15 +929,60 @@ costEfficiencyList2([(Unit,UnitsLeft,EUnitsLeft)|T],MinAv,GasAv,GasToMin,[R1|R])
 	costEfficiency2(Unit, GasToMin, UnitsLeft, MinAv, GasAv,EUnitsLeft, R1),
 	costEfficiencyList2(T,MinAv,GasAv,GasToMin,R).
 
+% Perform a merge sort to sort the most cost efficient units in order
+divide(L,A,B):-halve(L,[],A,B).
+halve(L,L,[],L).      % for lists of even length
+halve(L,[_|L],[],L).  % for lists of odd length
+halve([H|T],Acc,[H|L],B):-halve(T,[_|Acc],L,B).
 
-% find the most cost efficient unit; Not working properly atm...
-max([],X,X,_).
-max([(Unit,UnitsLeft)|T],(M,MLeft),X,GasToMin,MinAv,GasAv) :-
-costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,Unit1Cost,UnitsLeft)),
-costEfficiency(M, GasToMin, MLeft, MinAv, GasAv, (M,MinLeft,GasLeft,Unit2Cost,MLeft)),
-Unit1Cost =< Unit2Cost -> max(T,Unit,X,GasToMin,MinAv,GasAv);max(T,M,X,GasToMin,MinAv,GasAv).
+merge_sort([],[]).
+merge_sort([X],[X]).
+merge_sort(List,Sorted):-
+	List=[_,_|_],
+	divide(List,L1,L2),
+	merge_sort(L1,Sorted1),merge_sort(L2,Sorted2),
+	merge(Sorted1,Sorted2,Sorted).
 
-costEfficientUnit([H|T],Unit,GasToMin,MinAv,GasAv) :- max(T,H,Unit,GasToMin,MinAv,GasAv).
+merge([],L,L).
+merge(L,[],L):-L\=[].
+merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
+      [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],
+      [(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T]):-
+	ResourceLeft>ResourceLeft2,
+	UnitsLeft \= 0,
+	UnitsLeft2 \= 0,
+	merge(T1,[(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],T).
+
+merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
+      [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],
+      [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T]):-
+	ResourceLeft=<ResourceLeft2,
+	UnitsLeft \= 0,
+	UnitsLeft2 \= 0,
+	merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],T2,T).
+
+
+merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
+      [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],
+      [(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T]):-
+	UnitsLeft is 0,
+	UnitsLeft2 is 0,
+	EUnitsLeft<EUnitsLeft2,
+	merge(T1,[(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],T).
+
+merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
+      [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],
+      [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T]):-
+	UnitsLeft is 0,
+	UnitsLeft2 is 0,
+	EUnitsLeft>=EUnitsLeft2,
+	merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],T2,T).
+
+
+
+
+
+
 
 
 

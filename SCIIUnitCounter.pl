@@ -334,6 +334,7 @@ prop(ultralisk, speed, 4.13).
 % MinAvailable is how minerals you can spend on your army
 % GasAvailable is much gas you can spend on your army
 % Race is your Race, it will restrict what units you can build
+% GasToMinRatio is the value of gas to minerals you want
 % R is the result, a list of units with their resource effiecieny
 
 
@@ -350,7 +351,7 @@ prop(ultralisk, speed, 4.13).
 %% Print out more stats from battles as they happen (DONE)
 %% Import KB from other files 
 
-main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, BattleResult) :-
+main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, GasToMinRatio, Result) :-
 	validUnit(Unit),
 	validRace(Race),
 	validNumOfUnits(NumberOfUnits),
@@ -358,7 +359,9 @@ main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, BattleResult) :-
 	validGas(GasAvailable),
 
 	filterUserUnitInOrder(Race, MinAvailable, GasAvailable, ListOfPossibleUnits),
-	battleSimulation(Unit, NumberOfUnits, ListOfPossibleUnits, MinAvailable, GasAvailable, BattleResult).
+	battleSimulation(Unit, NumberOfUnits, ListOfPossibleUnits, MinAvailable, GasAvailable, BattleResult),
+	costEfficiencyList2(BattleResult, MinAvailable, GasAvailable, GasToMinRatio, CELResult),
+	merge_sort(CELResult, Result).
 
 prolog:message(enteringBattleMessage(EUnitLeft, EUnit, Unit)) -->
         [ '\n ====================SIMULATION START====================  \n ~w is entering battle against the enemies ~D ~ws'-[Unit, EUnitLeft, EUnit] ].

@@ -767,31 +767,19 @@ resourceSpent2(Unit, GasToMin, UnitsLeft, MineralSpent, GasSpent, ResourceSpent)
 	GasSpent is UnitsLeft*GasCost,
 	ResourceSpent is UnitsLeft*UnitCost.
 
-% Calculate the resources left, after the battle
-resourceLeft(Unit, GasToMin, UnitsLeft, MinAv, MinLeft, GasAv, GasLeft, ResourceLeft) :-
-	prop(Unit, mineral, MinCost),
-	prop(Unit,gas,GasCost),
-	UnitCost is MinCost+GasCost*GasToMin,
-	ResourceAv is MinAv+GasAv*GasToMin,
-	MineralSpent is UnitsLeft*MinCost,
-	GasSpent is UnitsLeft*GasCost,
-	ResourceSpent is UnitsLeft*UnitCost,
-	MinLeft is MinAv-MineralSpent,
-	GasLeft is GasAv-GasSpent,
-	ResourceLeft is ResourceAv-ResourceSpent.
-
 % Return the cost efficiency of the unit.
 costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft)) :-
 	prop(Unit, mineral, MinCost),
 	prop(Unit,gas,GasCost),
 	UnitCost = MinCost+GasCost*GasToMin,
+	ResourceAv = MinAv+GasAv*GasToMin,
 	MineralSpent is UnitsLeft*MinCost,
 	GasSpent is UnitsLeft*GasCost,
 	ResourceSpent is UnitsLeft*UnitCost,
 	buildUnits(Unit,MinAv,GasAv,N),
-	MinLeft is N*MinCost-MineralSpent,
-	GasLeft is N*GasCost-GasSpent,
-	ResourceLeft is ((N*MinCost+N*GasCost*GasToMin)-ResourceSpent).
+	MinLeft is MinAv-(N*MinCost-MineralSpent),
+	GasLeft is GasAv-(N*GasCost-GasSpent),
+	ResourceLeft is ResourceAv-((N*MinCost+N*GasCost*GasToMin)-ResourceSpent).
 
 % Return the list of all units' cost efficiency
 costEfficiencyList([],_,_,_,[]).

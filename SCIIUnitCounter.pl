@@ -146,7 +146,7 @@ prop(colossus, speed, 3.15).
 
 
 %% Use Battle Result to get resource effiecieny of each battle which will be R.
-
+%% Add enemy casualties to result?
 
 %% Print out more stats from battles as they happen???
 %% Import KB from other files
@@ -157,8 +157,8 @@ counter(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, BattleResult) :-
 	
 	MinAvailable > 49,
 	
-	inspectRace(Race, L),
-	battleSimulation(Unit, NumberOfUnits, L, MinAvailable, GasAvailable, BattleResult).
+	filterUserUnitInOrder(Race, MinAvailable, GasAvailable, ListOfPossibleUnits),
+	battleSimulation(Unit, NumberOfUnits, ListOfPossibleUnits, MinAvailable, GasAvailable, BattleResult).
 	
 
 
@@ -280,6 +280,7 @@ rangeChecker(EUnit, Unit, 0, 0) :-
 battleSimulation(_, _, [], _, _, []).
 battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R]) :-
 	buildUnits(Unit, MinAvailable, GasAvailable, UnitLeft),
+	print_message(informational, buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)),
 	rangeChecker(EUnit, Unit, ENextHit, NextHit),
 	prop(EUnit, hp, EHP),
 	prop(Unit, hp, HP),
@@ -292,6 +293,9 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R
 
 
 
+
+prolog:message(buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)) --> 
+        [ 'Built ~D ~ws from ~D Minerals ~D Gas)'-[UnitLeft, Unit, MinAvailable, GasAvailable] ].
 
 
 %% getBonusAttack will take in a defender and Attacker and return the Attacker's BonusAttack against the Defender in BonusAttack.
@@ -431,7 +435,7 @@ goToNextAttack(NextHit, NextHit, 0, 0).
 %% NextHit - Ticks till you can attack (attacks at 0)
 %% EDamagedUnit - Enemy's frontline unit, gets hit first and can have non full hp/shield
 %% DamagedUnit - your frontline unit, gets hit first and can have non full hp/shield
-%% R is result of battle, (Unit, UnitLeft)
+%% R is result of battle, (Unit, UnitLeft, EUnitLeft)
 
 %% Tests:
 %% tick(zealot,zealot,70,60,0,0,(100,50),(100,50),R).
@@ -439,12 +443,12 @@ goToNextAttack(NextHit, NextHit, 0, 0).
 
 
 %% No Enemies left!!! Record result and exit tick.
-tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,UnitLeft)) :-
+tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,UnitLeft,0)) :-
 	EUnitLeft =< 0,
 	UnitLeft > 0.
 
 %% No Units left :( Record result and exit tick.
-tick(_, Unit, _, UnitLeft, _, _, _, _, (Unit,0)) :-
+tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,0,EUnitLeft)) :-
 	UnitLeft =< 0.
 
 %% Unit can hit
@@ -455,7 +459,8 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, 0, EDamagedUnit, DamagedUnit, R
 	attack(Unit, UnitLeft, EUnit, Damage),
 	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
 	prop(Unit, coolDown, CD),
-	goToNextAttack(ENextHit, CD, NewENextHit, NewNextHit),
+	CDms is CD / 0.01,
+	goToNextAttack(ENextHit, CDms, NewENextHit, NewNextHit),
 	tick(EUnit, Unit, NewEUnitLeft, UnitLeft, NewENextHit, NewNextHit, NewEDamageUnit, DamagedUnit, R).
 
 
@@ -467,7 +472,8 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, NextHit, EDamagedUnit, DamagedUnit, R)
 	attack(EUnit, EUnitLeft, Unit, Damage),
 	defend(Damage, Unit, DamagedUnit, UnitLeft, NewDamageUnit, NewUnitLeft),
 	prop(EUnit, coolDown, ECD),
-	goToNextAttack(ECD, NextHit, NewENextHit, NewNextHit),
+	ECDms is ECD / 0.01,
+	goToNextAttack(ECDms, NextHit, NewENextHit, NewNextHit),
 	tick(EUnit, Unit, EUnitLeft, NewUnitLeft, NewENextHit, NewNextHit, EDamagedUnit, NewDamageUnit, R).
 
 %% Both units can hit
@@ -482,7 +488,9 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
 	prop(EUnit, coolDown, ECD),
 	prop(Unit, coolDown, CD),
-	goToNextAttack(ECD,CD,NewENextHit,NewNextHit),
+	ECDms is ECD / 0.01, 
+	CDms is CD / 0.01,
+	goToNextAttack(ECDms,CDms,NewENextHit,NewNextHit),
 	tick(EUnit, Unit, NewEUnitLeft, NewUnitLeft, NewENextHit, NewNextHit, NewEDamageUnit, NewDamageUnit, R).
 
 
@@ -541,6 +549,7 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 availableUnit(Unit, MinAvailable, GasAvailable, Res) :- buildUnits(Unit, MinAvailable, GasAvailable, N), N>0, Res is 1.
 
 % Builds a list of units that are available to make from the input list
+%% Example availableUnits(500,0,[zealot,immortal,probe,colossus,stalker],[],R). gives R = [probe, zealot]
 availableUnits(_, _, [], L, L).
 availableUnits(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1) -> availableUnits(MinAvailable, GasAvailable, T, [H|Acc], Result); availableUnits(MinAvailable,GasAvailable,T,Acc,Result).
 
@@ -550,7 +559,8 @@ filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,Lis
 
 % Reverse the order back.
 filterUserUnitInOrder(Race, MinAvailable, GasAvailable, OrderedResult) :-
-filterUserUnit(Race, MinAvailable, GasAvailable, Result), reverse(Result, OrderedResult).
+	filterUserUnit(Race, MinAvailable, GasAvailable, Result),
+	reverse(Result, OrderedResult).
 
 % Calculate the mineral spent; lower the number, more efficient the
 % unit is.

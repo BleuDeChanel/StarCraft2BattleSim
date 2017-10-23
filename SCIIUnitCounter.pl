@@ -632,16 +632,29 @@ merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
 merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
       [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],
       [(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T]):-
-	UnitsLeft is 0,
-	UnitsLeft2 is 0,
+	UnitsLeft = 0,
+	UnitsLeft2 = 0,
 	EUnitsLeft<EUnitsLeft2,
 	merge(T1,[(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],T).
 
 merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
       [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],
       [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T]):-
-	UnitsLeft is 0,
-	UnitsLeft2 is 0,
+	UnitsLeft = 0,
+	UnitsLeft2 = 0,
 	EUnitsLeft>=EUnitsLeft2,
 	merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],T2,T).
 
+merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
+      [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],
+      [(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T]):-
+	UnitsLeft \= 0,
+	UnitsLeft2 = 0,
+	merge(T1,[(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],T).
+
+merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
+      [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],
+      [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T]):-
+	UnitsLeft = 0,
+	UnitsLeft2 \= 0,
+	merge(T1,[(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T2],T).

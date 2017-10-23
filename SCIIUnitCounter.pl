@@ -110,6 +110,203 @@ prop(colossus, coolDown, 1.18).
 prop(colossus, range, 6).
 prop(colossus, speed, 3.15).
 
+prop(scv, mineral, 50).
+prop(scv, gas, 0).
+prop(scv, armour, 0).
+prop(scv, hp, 45).
+prop(scv, shield, 0).
+prop(scv, race, terran).
+prop(scv, attributeModifier, [light,biological,mechanical]).
+prop(scv, groundAttack, 5).
+prop(scv, bonusAttack, 0).
+prop(scv, bonusType, []).
+prop(scv, coolDown, 1.07).
+prop(scv, range, 0).
+prop(scv, speed, 3.94).
+
+prop(marine, mineral, 50).
+prop(marine, gas, 0).
+prop(marine, armour, 0).
+prop(marine, hp, 45).
+prop(marine, shield, 0).
+prop(marine, race, terran).
+prop(marine, attributeModifier, [light,biological]).
+prop(marine, groundAttack, 6).
+prop(marine, bonusAttack, 0).
+prop(marine, bonusType, []).
+prop(marine, coolDown, 0.61).
+prop(marine, range, 5).
+prop(marine, speed, 3.15).
+
+prop(marauder, mineral, 100).
+prop(marauder, gas, 25).
+prop(marauder, armour, 1).
+prop(marauder, hp, 125).
+prop(marauder, shield, 0).
+prop(marauder, race, terran).
+prop(marauder, attributeModifier, [armoured, biological]).
+prop(marauder, groundAttack, 10).
+prop(marauder, bonusAttack, 5).
+prop(marauder, bonusType, [armoured]).
+prop(marauder, coolDown, 1.07).
+prop(marauder, range, 6).
+prop(marauder, speed, 3.15).
+
+prop(reaper, mineral, 50).
+prop(reaper, gas, 50).
+prop(reaper, armour, 0).
+prop(reaper, hp, 60).
+prop(reaper, shield, 0).
+prop(reaper, race, terran).
+prop(reaper, attributeModifier, [light,biological]).
+prop(reaper, groundAttack, 8).
+prop(reaper, bonusAttack, 0).
+prop(reaper, bonusType, []).
+prop(reaper, coolDown, 0.79).
+prop(reaper, range, 5).
+prop(reaper, speed, 5.25).
+
+prop(ghost, mineral, 200).
+prop(ghost, gas, 100).
+prop(ghost, armour, 0).
+prop(ghost, hp, 100).
+prop(ghost, shield, 0).
+prop(ghost, race, terran).
+prop(ghost, attributeModifier, [biological, psionic]).
+prop(ghost, groundAttack, 10).
+prop(ghost, bonusAttack, 10).
+prop(ghost, bonusType, [light]).
+prop(ghost, coolDown, 1.07).
+prop(ghost, range, 6).
+prop(ghost, speed, 3.94).
+
+prop(hellbat, mineral, 100).
+prop(hellbat, gas, 0).
+prop(hellbat, armour, 0).
+prop(hellbat, hp, 135).
+prop(hellbat, shield, 0).
+prop(hellbat, race, terran).
+prop(hellbat, attributeModifier, [light, biological, mechanical]).
+prop(hellbat, groundAttack, 18).
+prop(hellbat, bonusAttack, 12).
+prop(hellbat, bonusType, [light]).
+prop(hellbat, coolDown, 1.43).
+prop(hellbat, range, 2).
+prop(hellbat, speed, 3.15).
+
+prop(cyclone, mineral, 150).
+prop(cyclone, gas, 100).
+prop(cyclone, armour, 1).
+prop(cyclone, hp, 180).
+prop(cyclone, shield, 0).
+prop(cyclone, race, terran).
+prop(cyclone, attributeModifier, [armoured, mechanical]).
+prop(cyclone, groundAttack, 3).
+prop(cyclone, bonusAttack, 2).
+prop(cyclone, bonusType, [armoured]).
+prop(cyclone, coolDown, 0.1).
+prop(cyclone, range, 4).
+prop(cyclone, speed, 4.13).
+
+prop(drone, mineral, 50).
+prop(drone, gas, 0).
+prop(drone, armour, 0).
+prop(drone, hp, 40).
+prop(drone, shield, 0).
+prop(drone, race, zerg).
+prop(drone, attributeModifier, [light,biological]).
+prop(drone, groundAttack, 5).
+prop(drone, bonusAttack, 0).
+prop(drone, bonusType, []).
+prop(drone, coolDown, 1.07).
+prop(drone, range, 0).
+prop(drone, speed, 3.94).
+
+prop(queen, mineral, 150).
+prop(queen, gas, 0).
+prop(queen, armour, 1).
+prop(queen, hp, 175).
+prop(queen, shield, 0).
+prop(queen, race, zerg).
+prop(queen, attributeModifier, [biological,psionic]).
+prop(queen, groundAttack, 8).
+prop(queen, bonusAttack, 0).
+prop(queen, bonusType, []).
+prop(queen, coolDown, 0.71).
+prop(queen, range, 5).
+prop(queen, speed, 1.31).
+
+prop(zergling, mineral, 25).
+prop(zergling, gas, 0).
+prop(zergling, armour, 0).
+prop(zergling, hp, 35).
+prop(zergling, shield, 0).
+prop(zergling, race, zerg).
+prop(zergling, attributeModifier, [light,biological]).
+prop(zergling, groundAttack, 5).
+prop(zergling, bonusAttack, 0).
+prop(zergling, bonusType, []).
+prop(zergling, coolDown, 0.497).
+prop(zergling, range, 0).
+prop(zergling, speed, 4.13).
+
+prop(roach, mineral, 75).
+prop(roach, gas, 25).
+prop(roach, armour, 1).
+prop(roach, hp, 145).
+prop(roach, shield, 0).
+prop(roach, race, zerg).
+prop(roach, attributeModifier, [biological]).
+prop(roach, groundAttack, 16).
+prop(roach, bonusAttack, 0).
+prop(roach, bonusType, []).
+prop(roach, coolDown, 1.14).
+prop(roach, range, 6).
+prop(roach, speed, 3.85).
+
+prop(ravager, mineral, 25).
+prop(ravager, gas, 75).
+prop(ravager, armour, 1).
+prop(ravager, hp, 120).
+prop(ravager, shield, 0).
+prop(ravager, race, zerg).
+prop(ravager, attributeModifier, [armoured,biological]).
+prop(ravager, groundAttack, 16).
+prop(ravager, bonusAttack, 0).
+prop(ravager, bonusType, []).
+prop(ravager, coolDown, 1.43).
+prop(ravager, range, 4).
+prop(ravager, speed, 3.15).
+
+prop(hydralisk, mineral, 100).
+prop(hydralisk, gas, 50).
+prop(hydralisk, armour, 0).
+prop(hydralisk, hp, 90).
+prop(hydralisk, shield, 0).
+prop(hydralisk, race, zerg).
+prop(hydralisk, attributeModifier, [light,biological]).
+prop(hydralisk, groundAttack, 12).
+prop(hydralisk, bonusAttack, 0).
+prop(hydralisk, bonusType, []).
+prop(hydralisk, coolDown, 0.54).
+prop(hydralisk, range, 5).
+prop(hydralisk, speed, 3.15).
+
+prop(ultralisk, mineral, 300).
+prop(ultralisk, gas, 200).
+prop(ultralisk, armour, 2).
+prop(ultralisk, hp, 500).
+prop(ultralisk, shield, 0).
+prop(ultralisk, race, zerg).
+prop(ultralisk, attributeModifier, [armoured,biological,massive]).
+prop(ultralisk, groundAttack, 35).
+prop(ultralisk, bonusAttack, 0).
+prop(ultralisk, bonusType, []).
+prop(ultralisk, coolDown, 0.61).
+prop(ultralisk, range, 1).
+prop(ultralisk, speed, 4.13).
+
+
 % Knowledgebase using Triple
 %
 % Properties we are keeping
@@ -155,14 +352,14 @@ prop(colossus, speed, 3.15).
 %% Import KB from other files
 
 main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, BattleResult) :-
-	
+
 	NumberOfUnits > 0,
-	
+
 	MinAvailable > 49,
-	
+
 	filterUserUnitInOrder(Race, MinAvailable, GasAvailable, ListOfPossibleUnits),
 	battleSimulation(Unit, NumberOfUnits, ListOfPossibleUnits, MinAvailable, GasAvailable, BattleResult).
-	
+
 
 
 %% R is a race (Protoss, Zerg, Terran) of the User
@@ -262,7 +459,6 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R
 	battleSimulation(EUnit, OriginalEUnitLeft, T, MinAvailable, GasAvailable, R).
 
 
-
 prolog:message(enteringBattleMessage(EUnitLeft, EUnit, Unit)) --> 
         [ '\n ====================SIMULATION START====================  \n ~w is entering battle against the enemies ~D ~ws'-[Unit, EUnitLeft, EUnit] ].
 
@@ -304,7 +500,7 @@ prolog:message(battleEndBanner()) -->
 
 %% getBonusAttack will take in a defender and Attacker and return the Attacker's BonusAttack against the Defender in BonusAttack.
 %% Note: Currently it does not support a unit having different bonusAttacks for different Defenders
-%% Gets Attacker's BonusType array and Defender's AttributeModifier array and see's if a value matches. 
+%% Gets Attacker's BonusType array and Defender's AttributeModifier array and see's if a value matches.
 %% If a value matches set BonusAttack. If not return 0.
 
 %% Case: Attacker's bonusAttack is 0 for all. Return 0.
@@ -523,7 +719,7 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
 	prop(EUnit, coolDown, ECD),
 	prop(Unit, coolDown, CD),
-	ECDms is ECD / 0.01, 
+	ECDms is ECD / 0.01,
 	CDms is CD / 0.01,
 	goToNextAttack(ECDms,CDms,NewENextHit,NewNextHit),
 	print_message(banner, nextAttackBanner()),
@@ -599,53 +795,66 @@ filterUserUnitInOrder(Race, MinAvailable, GasAvailable, OrderedResult) :-
 	filterUserUnit(Race, MinAvailable, GasAvailable, Result),
 	reverse(Result, OrderedResult).
 
+
+% No longer use the TotalHPleft
+%
 % Calculate the mineral spent; lower the number, more efficient the
 % unit is.
-mineralSpent(Unit,TotalHPleft, MineralSpent) :-
+mineralSpent(Unit,UnitsLeft, MineralSpent) :-
 	prop(Unit,mineral, MinCost),
-	prop(Unit,hp,UnitHP),
-	prop(Unit,shield,UnitShield),
-	UnitsLeft = ceiling(TotalHPleft/(UnitHP+UnitShield)),
 	MineralSpent is UnitsLeft*MinCost.
 
 
 % Calculate the gas spent; lower the number, more efficient the
 % unit is.
-gasSpent(Unit,TotalHPleft, GasSpent) :-
+gasSpent(Unit,UnitsLeft, GasSpent) :-
 	prop(Unit, gas, GasCost),
-	prop(Unit,hp,UnitHP),
-	prop(Unit,shield,UnitShield),
-	UnitsLeft = ceiling(TotalHPleft/(UnitHP+UnitShield)),
 	GasSpent is UnitsLeft*GasCost.
 
 % Calculate the resource spent; lower the number, more efficient the
 % unit is.
-resourceSpent(Unit, GasToMin, TotalHPleft, ResourceSpent) :-
-        prop(Unit,mineral, MinCost),
+resourceSpent(Unit, GasToMin, UnitsLeft, ResourceSpent) :-
+	prop(Unit,mineral, MinCost),
 	prop(Unit,gas,GasCost),
 	UnitCost = MinCost+GasCost*GasToMin,
-	prop(Unit,hp,UnitHP),
-	prop(Unit,shield,UnitShield),
-	UnitsLeft = ceiling(TotalHPleft/(UnitHP+UnitShield)),
 	ResourceSpent is UnitsLeft*UnitCost.
 
 % Calculate the resource spent, returning the Mineral and Gas spent
 % separate.
-resourceSpent2(Unit, GasToMin, TotalHPleft, MineralSpent, GasSpent, ResourceSpent) :-
+resourceSpent2(Unit, GasToMin, UnitsLeft, MineralSpent, GasSpent, ResourceSpent) :-
 	prop(Unit, mineral, MinCost),
 	prop(Unit,gas,GasCost),
 	UnitCost = MinCost+GasCost*GasToMin,
-	prop(Unit,hp,UnitHP),
-	prop(Unit,shield,UnitShield),
-	UnitsLeft = ceiling(TotalHPleft/(UnitHP+UnitShield)),
 	MineralSpent is UnitsLeft*MinCost,
 	GasSpent is UnitsLeft*GasCost,
 	ResourceSpent is UnitsLeft*UnitCost.
 
+% Return the cost efficiency of the unit.
+costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft)) :-
+	prop(Unit, mineral, MinCost),
+	prop(Unit,gas,GasCost),
+	UnitCost = MinCost+GasCost*GasToMin,
+	ResourceAv = MinAv+GasAv*GasToMin,
+	MineralSpent is UnitsLeft*MinCost,
+	GasSpent is UnitsLeft*GasCost,
+	ResourceSpent is UnitsLeft*UnitCost,
+	buildUnits(Unit,MinAv,GasAv,N),
+	MinLeft is MinAv-(N*MinCost-MineralSpent),
+	GasLeft is GasAv-(N*GasCost-GasSpent),
+	ResourceLeft is ResourceAv-((N*MinCost+N*GasCost*GasToMin)-ResourceSpent).
+
+% Return the list of all units' cost efficiency
+costEfficiencyList([],_,_,_,[]).
+costEfficiencyList([(Unit,UnitsLeft)|T],MinAv,GasAv,GasToMin,[R1|R]) :-
+	costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, R1),
+	costEfficiencyList(T,MinAv,GasAv,GasToMin,R).
+
+
 % find the most cost efficient unit
 min([],X,X,_,_).
-min([H|T],M,X,GasToMin,TotalHPLeft) :-
-resourceSpent(H,GasToMin,TotalHPLeft, Unit1Cost),
-resourceSpent(M,GasToMin,TotalHPLeft, Unit2Cost),
-Unit1Cost =< Unit2Cost -> min(T,H,X,GasToMin,TotalHPLeft);min(T,M,X,GasToMin,TotalHPLeft).
-costEfficientUnit([H|T],Unit,GasToMin,TotalHPLeft) :- min(T,H,Unit,GasToMin,TotalHPLeft).
+min([H|T],M,X,GasToMin,UnitsLeft) :-
+resourceSpent(H,GasToMin,UnitsLeft, Unit1Cost),
+resourceSpent(M,GasToMin,UnitsLeft, Unit2Cost),
+Unit1Cost =< Unit2Cost -> min(T,H,X,GasToMin,UnitsLeft);min(T,M,X,GasToMin,UnitsLeft).
+costEfficientUnit([H|T],Unit,GasToMin,UnitsLeft) :- min(T,H,Unit,GasToMin,UnitsLeft).
+

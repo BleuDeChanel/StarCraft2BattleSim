@@ -110,6 +110,203 @@ prop(colossus, coolDown, 1.18).
 prop(colossus, range, 6).
 prop(colossus, speed, 3.15).
 
+prop(scv, mineral, 50).
+prop(scv, gas, 0).
+prop(scv, armour, 0).
+prop(scv, hp, 45).
+prop(scv, shield, 0).
+prop(scv, race, terran).
+prop(scv, attributeModifier, [light,biological,mechanical]).
+prop(scv, groundAttack, 5).
+prop(scv, bonusAttack, 0).
+prop(scv, bonusType, []).
+prop(scv, coolDown, 1.07).
+prop(scv, range, 0).
+prop(scv, speed, 3.94).
+
+prop(marine, mineral, 50).
+prop(marine, gas, 0).
+prop(marine, armour, 0).
+prop(marine, hp, 45).
+prop(marine, shield, 0).
+prop(marine, race, terran).
+prop(marine, attributeModifier, [light,biological]).
+prop(marine, groundAttack, 6).
+prop(marine, bonusAttack, 0).
+prop(marine, bonusType, []).
+prop(marine, coolDown, 0.61).
+prop(marine, range, 5).
+prop(marine, speed, 3.15).
+
+prop(marauder, mineral, 100).
+prop(marauder, gas, 25).
+prop(marauder, armour, 1).
+prop(marauder, hp, 125).
+prop(marauder, shield, 0).
+prop(marauder, race, terran).
+prop(marauder, attributeModifier, [armoured, biological]).
+prop(marauder, groundAttack, 10).
+prop(marauder, bonusAttack, 5).
+prop(marauder, bonusType, [armoured]).
+prop(marauder, coolDown, 1.07).
+prop(marauder, range, 6).
+prop(marauder, speed, 3.15).
+
+prop(reaper, mineral, 50).
+prop(reaper, gas, 50).
+prop(reaper, armour, 0).
+prop(reaper, hp, 60).
+prop(reaper, shield, 0).
+prop(reaper, race, terran).
+prop(reaper, attributeModifier, [light,biological]).
+prop(reaper, groundAttack, 8).
+prop(reaper, bonusAttack, 0).
+prop(reaper, bonusType, []).
+prop(reaper, coolDown, 0.79).
+prop(reaper, range, 5).
+prop(reaper, speed, 5.25).
+
+prop(ghost, mineral, 200).
+prop(ghost, gas, 100).
+prop(ghost, armour, 0).
+prop(ghost, hp, 100).
+prop(ghost, shield, 0).
+prop(ghost, race, terran).
+prop(ghost, attributeModifier, [biological, psionic]).
+prop(ghost, groundAttack, 10).
+prop(ghost, bonusAttack, 10).
+prop(ghost, bonusType, [light]).
+prop(ghost, coolDown, 1.07).
+prop(ghost, range, 6).
+prop(ghost, speed, 3.94).
+
+prop(hellbat, mineral, 100).
+prop(hellbat, gas, 0).
+prop(hellbat, armour, 0).
+prop(hellbat, hp, 135).
+prop(hellbat, shield, 0).
+prop(hellbat, race, terran).
+prop(hellbat, attributeModifier, [light, biological, mechanical]).
+prop(hellbat, groundAttack, 18).
+prop(hellbat, bonusAttack, 12).
+prop(hellbat, bonusType, [light]).
+prop(hellbat, coolDown, 1.43).
+prop(hellbat, range, 2).
+prop(hellbat, speed, 3.15).
+
+prop(cyclone, mineral, 150).
+prop(cyclone, gas, 100).
+prop(cyclone, armour, 1).
+prop(cyclone, hp, 180).
+prop(cyclone, shield, 0).
+prop(cyclone, race, terran).
+prop(cyclone, attributeModifier, [armoured, mechanical]).
+prop(cyclone, groundAttack, 3).
+prop(cyclone, bonusAttack, 2).
+prop(cyclone, bonusType, [armoured]).
+prop(cyclone, coolDown, 0.1).
+prop(cyclone, range, 4).
+prop(cyclone, speed, 4.13).
+
+prop(drone, mineral, 50).
+prop(drone, gas, 0).
+prop(drone, armour, 0).
+prop(drone, hp, 40).
+prop(drone, shield, 0).
+prop(drone, race, zerg).
+prop(drone, attributeModifier, [light,biological]).
+prop(drone, groundAttack, 5).
+prop(drone, bonusAttack, 0).
+prop(drone, bonusType, []).
+prop(drone, coolDown, 1.07).
+prop(drone, range, 0).
+prop(drone, speed, 3.94).
+
+prop(queen, mineral, 150).
+prop(queen, gas, 0).
+prop(queen, armour, 1).
+prop(queen, hp, 175).
+prop(queen, shield, 0).
+prop(queen, race, zerg).
+prop(queen, attributeModifier, [biological,psionic]).
+prop(queen, groundAttack, 8).
+prop(queen, bonusAttack, 0).
+prop(queen, bonusType, []).
+prop(queen, coolDown, 0.71).
+prop(queen, range, 5).
+prop(queen, speed, 1.31).
+
+prop(zergling, mineral, 25).
+prop(zergling, gas, 0).
+prop(zergling, armour, 0).
+prop(zergling, hp, 35).
+prop(zergling, shield, 0).
+prop(zergling, race, zerg).
+prop(zergling, attributeModifier, [light,biological]).
+prop(zergling, groundAttack, 5).
+prop(zergling, bonusAttack, 0).
+prop(zergling, bonusType, []).
+prop(zergling, coolDown, 0.497).
+prop(zergling, range, 0).
+prop(zergling, speed, 4.13).
+
+prop(roach, mineral, 75).
+prop(roach, gas, 25).
+prop(roach, armour, 1).
+prop(roach, hp, 145).
+prop(roach, shield, 0).
+prop(roach, race, zerg).
+prop(roach, attributeModifier, [biological]).
+prop(roach, groundAttack, 16).
+prop(roach, bonusAttack, 0).
+prop(roach, bonusType, []).
+prop(roach, coolDown, 1.14).
+prop(roach, range, 6).
+prop(roach, speed, 3.85).
+
+prop(ravager, mineral, 25).
+prop(ravager, gas, 75).
+prop(ravager, armour, 1).
+prop(ravager, hp, 120).
+prop(ravager, shield, 0).
+prop(ravager, race, zerg).
+prop(ravager, attributeModifier, [armoured,biological]).
+prop(ravager, groundAttack, 16).
+prop(ravager, bonusAttack, 0).
+prop(ravager, bonusType, []).
+prop(ravager, coolDown, 1.43).
+prop(ravager, range, 4).
+prop(ravager, speed, 3.15).
+
+prop(hydralisk, mineral, 100).
+prop(hydralisk, gas, 50).
+prop(hydralisk, armour, 0).
+prop(hydralisk, hp, 90).
+prop(hydralisk, shield, 0).
+prop(hydralisk, race, zerg).
+prop(hydralisk, attributeModifier, [light,biological]).
+prop(hydralisk, groundAttack, 12).
+prop(hydralisk, bonusAttack, 0).
+prop(hydralisk, bonusType, []).
+prop(hydralisk, coolDown, 0.54).
+prop(hydralisk, range, 5).
+prop(hydralisk, speed, 3.15).
+
+prop(ultralisk, mineral, 300).
+prop(ultralisk, gas, 200).
+prop(ultralisk, armour, 2).
+prop(ultralisk, hp, 500).
+prop(ultralisk, shield, 0).
+prop(ultralisk, race, zerg).
+prop(ultralisk, attributeModifier, [armoured,biological,massive]).
+prop(ultralisk, groundAttack, 35).
+prop(ultralisk, bonusAttack, 0).
+prop(ultralisk, bonusType, []).
+prop(ultralisk, coolDown, 0.61).
+prop(ultralisk, range, 1).
+prop(ultralisk, speed, 4.13).
+
+
 % Knowledgebase using Triple
 %
 % Properties we are keeping
@@ -137,48 +334,28 @@ prop(colossus, speed, 3.15).
 % R is the result, a list of units with their resource effiecieny
 
 
-counter(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, R) :-
-	%% Make sure NumberOfUnits > 0.
-	dif(NumberOfUnits, 0),
-	%% Make sure Minerals are given
+%% TODO:
+%% Basic validation of inputs
+%% Make sure Unit is valid.
+%% Make sure race is valid.
+%% Make sure Minerals are given
+%% Make sure NumberOfUnits > 0.
+
+
+%% Use Battle Result to get resource effiecieny of each battle which will be R.
+%% Add enemy casualties to result?
+
+%% Print out more stats from battles as they happen???
+%% Import KB from other files
+
+main(Unit, NumberOfUnits, MinAvailable, GasAvailable, Race, BattleResult) :-
+
+	NumberOfUnits > 0,
+
 	MinAvailable > 49,
-	%% Make sure Unit is valid.
-	%% Make sure race is valid.
-	inspect(Unit, EMineral, EGas, EHP, EShield, EArmour, EGroundAttack, EBonusAttack, EBonusType, ECoolDown, ERange),
-	inspectRace(R, L),
-	battleSimulation(Unit, NumberOfUnits, L, MinAvailable, GasAvailable, R).
 
-
-% U is the enemies unit.
-% Inspect will give back:
-% Mineral,
-% Gas,
-% Armour
-% Shield, (0 if unit has no sheilds, that is not Protoss race)
-% HP,
-% GroundAttack,
-% BonusAttack, (Has this value added to GroundAttack when attacking one of it's BonusType)
-% BonusType, (List of type bonuses)
-% CoolDown, (Time inbetween attacks)
-% attributeModifier, (List of attributes this unit has)
-% Range (Range of Unit's attack)
-% inspect(U, Mineral, Gas, HP, Shield, Armour, GroundAttack, BonusAttack, BonusTypes, CoolDown, Range) :-
-% prop(U, mineral, Mineral), gas(U, Gas), hp(U, HP), shield(U, Shield),
-% armour(U, Armour), groundAttack(U,GroundAttack)
-% bonusAttack(U,BonusAttack), bonusType(U, BonusType), coolDown(U,
-% CoolDown), range(U, Range).
-
-inspect(U, Mineral, Gas, Armour, HP, Shield, GroundAttack, BonusAttack, BonusType, CoolDown, Range) :-
-	prop(U, mineral, Mineral),
-	prop(U, gas, Gas),
-	prop(U, hp, HP),
-	prop(U, shield, Shield),
-	prop(U, armour, Armour),
-	prop(U, groundAttack, GroundAttack),
-	prop(U, bonusAttack, BonusAttack),
-	prop(U, bonusType, BonusType),
-	prop(U, coolDown, CoolDown),
-	prop(U, range, Range).
+	filterUserUnitInOrder(Race, MinAvailable, GasAvailable, ListOfPossibleUnits),
+	battleSimulation(Unit, NumberOfUnits, ListOfPossibleUnits, MinAvailable, GasAvailable, BattleResult).
 
 
 
@@ -188,7 +365,12 @@ inspect(U, Mineral, Gas, Armour, HP, Shield, GroundAttack, BonusAttack, BonusTyp
 inspectRace(R, L) :-
 	findall(X0, prop(X0, race, R), L).
 
-
+%% intersects(L1, L2) is true if one of L1's elements is in L2.
+intersects([H|_],List) :-
+    member(H,List),
+    !.
+intersects([_|T],List) :-
+    intersects(T,List).
 
 %% MaxBuild is true if R is GA / GPU.
 %% If GPU is 0 give -1.
@@ -228,7 +410,8 @@ rangeChecker(EUnit, Unit, 0, NextHit) :-
 	prop(Unit, speed, Speed),
 	Tick is 0.01,
 	MovePerTick is Speed * Tick,
-	NextHit is Distance / MovePerTick.
+	NextHit is Distance / MovePerTick,
+	print_message(informational, rangeMessage(EUnit, Unit, ER, R, NextHit)).
 
 %% Unit hits first
 rangeChecker(EUnit, Unit, ENextHit, 0) :-
@@ -239,39 +422,78 @@ rangeChecker(EUnit, Unit, ENextHit, 0) :-
 	prop(EUnit, speed, Speed),
 	Tick is 0.01,
 	MovePerTick is Speed * Tick,
-	ENextHit is Distance / MovePerTick.
+	ENextHit is Distance / MovePerTick,
+	print_message(informational, rangeMessage(Unit, EUnit, R, ER, ENextHit)).
 
 %% Same range
 rangeChecker(EUnit, Unit, 0, 0) :-
 	prop(EUnit, range, ER),
 	prop(Unit, range, R),
-	R = ER.
-
-	%% Take speed of slower unit (LOOK AT NOTES)
-
-
-
+	R = ER,
+	print_message(informational, rangeMessage(Unit, EUnit, R, ER, 0)).
 
 
 %% battleSimulation(Unit, NumberOfUnits, L, MinAvailable, GasAvailable, R). is true when:
 %% Unit is the enemies unit
 %% EUnitLeft is the number of enemy units
-%% L is a list of units that are available to your race
+%% L is a list of units this will simulate battle for
 %% MinAvailable is how many minerals you have available
 %% GasAvailable is how much gas you have available
-%% R is a list of elements. Each element has unit, HP total left, and resources leftover.
-%% HP total left is the total HP left of the built units after going through battleSimulation with the enemy
-battleSimulation(EUnit, EUnitLeft, [], MinAvailable, GasAvailable, []).
-battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
+%% R is a list of elements. Each element has unit, UnitsLeft of the player
+battleSimulation(_, _, [], _, _, []).
+battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, [R1 | R]) :-
+	print_message(banner, enteringBattleMessage(EUnitLeft, EUnit, Unit)),
 	buildUnits(Unit, MinAvailable, GasAvailable, UnitLeft),
-
-	rangeChecker(Eunit, Unit, ENextHit, NextHit),
+	print_message(informational, buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)),
+	rangeChecker(EUnit, Unit, ENextHit, NextHit),
 	prop(EUnit, hp, EHP),
 	prop(Unit, hp, HP),
 	prop(EUnit, shield, EShield),
 	prop(Unit, shield, Shield),
+	OriginalEUnitLeft is EUnitLeft,
+	tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, (HP, Shield), (EHP, EShield), R1),
+	battleSimulation(EUnit, OriginalEUnitLeft, T, MinAvailable, GasAvailable, R).
 
-	tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, NextHit, (HP, Shield), (EHP, EShield), R).
+
+
+prolog:message(enteringBattleMessage(EUnitLeft, EUnit, Unit)) -->
+        [ '\n~w is entering battle against the enemies ~D ~w'-[Unit, EUnitLeft, EUnit] ].
+
+prolog:message(buildMessage(Unit, UnitLeft, MinAvailable, GasAvailable)) -->
+        [ 'Built ~D ~ws from ~D Minerals ~D Gas'-[UnitLeft, Unit, MinAvailable, GasAvailable] ].
+
+prolog:message(rangeMessage(Unit1, Unit2, Unit1Range, Unit2Range, Unit2AttackTime)) -->
+        [ '~w has ~D Range \n ~w has ~D Range \n It will take ~5fms for ~w to get in range.'-[Unit1, Unit1Range, Unit2, Unit2Range, Unit2AttackTime, Unit2] ].
+
+%% prolog:message(attackMessage(Unit1, NumUnit1, Unit2, Damage)) -->
+%%         [ '~D ~ws attack ~w for ~D'-[NumUnit1, Unit1, Unit2, Unit2Range, Unit2AttackTime, Unit2] ].
+
+
+%% getBonusAttack will take in a defender and Attacker and return the Attacker's BonusAttack against the Defender in BonusAttack.
+%% Note: Currently it does not support a unit having different bonusAttacks for different Defenders
+%% Gets Attacker's BonusType array and Defender's AttributeModifier array and see's if a value matches.
+%% If a value matches set BonusAttack. If not return 0.
+
+%% Case: Attacker's bonusAttack is 0 for all. Return 0.
+getBonusAttack(Attacker, _, 0) :-
+	prop(Attacker, bonusAttack, BonusAttack),
+	BonusAttack = 0.
+
+%% Case: we have a match in BonusTypes and AttributeModifiers so the bonusAttack applies
+getBonusAttack(Attacker, Defender, BonusAttack) :-
+	prop(Attacker, bonusAttack, BonusAttack),
+	BonusAttack > 0,
+	prop(Attacker, bonusType, BonusTypes),
+	prop(Defender, attributeModifier, AttributeModifiers),
+	intersects(BonusTypes, AttributeModifiers).
+
+%% No match in BonusTypes and AttributeModifiers so the bonusAttack is 0
+getBonusAttack(Attacker, Defender, 0) :-
+	prop(Attacker, bonusAttack, BonusAttack),
+	BonusAttack > 0,
+	prop(Attacker, bonusType, BonusTypes),
+	prop(Defender, attributeModifier, AttributeModifiers),
+	\+ intersects(BonusTypes, AttributeModifiers).
 
 
 
@@ -282,7 +504,7 @@ battleSimulation(EUnit, EUnitLeft, [Unit|T], MinAvailable, GasAvailable, R) :-
 %% attack(zealot, 500, zealot, D). Expect D = 7500
 attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 	prop(Attacker, groundAttack, BasicAttack),
-	BonusAttack is 0,
+	getBonusAttack(Attacker, Defender, BonusAttack),
 	prop(Defender, armour, DefenderArmour),
 	SingleAttack is BasicAttack + BonusAttack - DefenderArmour,
 	Damage is AttackerUnitleft * SingleAttack.
@@ -290,7 +512,7 @@ attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 
 
 
-%% NOTE: Shield will be added to HP, and use same Armour as it's unit's Armour.
+%% NOTE: Shield will use same Armour as its unit's Armour.
 %% It should have it's own armour value.
 
 %%	Looking into Attack
@@ -308,7 +530,7 @@ attack(Attacker, AttackerUnitleft, Defender, Damage) :-
 %% Case 1: Shield doesn't break
 %% Tests:
 %% defend(10, zealot, (100,50),1,(NewHP, NewShield), NewLeft).
-defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (DefenderDamagedUnitHP, NewDefenderDamagedUnitShield), DefenderUnitLeft) :-
+defend(Damage, _, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (DefenderDamagedUnitHP, NewDefenderDamagedUnitShield), DefenderUnitLeft) :-
 	NewDefenderDamagedUnitShield is DefenderDamagedUnitShield - Damage,
 	NewDefenderDamagedUnitShield >= 0.
 
@@ -319,7 +541,7 @@ defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), Def
 %% defend(75, zealot, (100,0),1,(NewHP, NewShield), NewLeft).
 %% defend(75, zealot, (100,5),1,(NewHP, NewShield), NewLeft).
 
-defend(Damage, Defender, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, 0), DefenderUnitLeft) :-
+defend(Damage, _, (DefenderDamagedUnitHP, DefenderDamagedUnitShield), DefenderUnitLeft, (NewDefenderDamagedUnitHP, 0), DefenderUnitLeft) :-
 	NewDefenderDamagedUnitShield is DefenderDamagedUnitShield - Damage,
 	NewDefenderDamagedUnitShield < 0,
 	NewDamage is Damage - DefenderDamagedUnitShield,
@@ -384,7 +606,7 @@ goToNextAttack(NextHit, NextHit, 0, 0).
 %% NextHit - Ticks till you can attack (attacks at 0)
 %% EDamagedUnit - Enemy's frontline unit, gets hit first and can have non full hp/shield
 %% DamagedUnit - your frontline unit, gets hit first and can have non full hp/shield
-%% R is result of battle, (Unit, TotalHP of your army left)
+%% R is result of battle, (Unit, UnitLeft, EUnitLeft)
 
 %% Tests:
 %% tick(zealot,zealot,70,60,0,0,(100,50),(100,50),R).
@@ -392,14 +614,12 @@ goToNextAttack(NextHit, NextHit, 0, 0).
 
 
 %% No Enemies left!!! Record result and exit tick.
-tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, (HP, Shield), (Unit,TotalHP)) :-
+tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,UnitLeft,0)) :-
 	EUnitLeft =< 0,
-	UnitLeft > 0,
-	prop(Unit, hp, FullHP),
-	TotalHP is FullHP * (UnitLeft - 1) + HP.
+	UnitLeft > 0.
 
 %% No Units left :( Record result and exit tick.
-tick(_, Unit, _, UnitLeft, _, _, _, _, (Unit,0)) :-
+tick(_, Unit, EUnitLeft, UnitLeft, _, _, _, _, (Unit,0,EUnitLeft)) :-
 	UnitLeft =< 0.
 
 %% Unit can hit
@@ -410,7 +630,8 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, ENextHit, 0, EDamagedUnit, DamagedUnit, R
 	attack(Unit, UnitLeft, EUnit, Damage),
 	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
 	prop(Unit, coolDown, CD),
-	goToNextAttack(ENextHit, CD, NewENextHit, NewNextHit),
+	CDms is CD / 0.01,
+	goToNextAttack(ENextHit, CDms, NewENextHit, NewNextHit),
 	tick(EUnit, Unit, NewEUnitLeft, UnitLeft, NewENextHit, NewNextHit, NewEDamageUnit, DamagedUnit, R).
 
 
@@ -422,7 +643,8 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, NextHit, EDamagedUnit, DamagedUnit, R)
 	attack(EUnit, EUnitLeft, Unit, Damage),
 	defend(Damage, Unit, DamagedUnit, UnitLeft, NewDamageUnit, NewUnitLeft),
 	prop(EUnit, coolDown, ECD),
-	goToNextAttack(ECD, NextHit, NewENextHit, NewNextHit),
+	ECDms is ECD / 0.01,
+	goToNextAttack(ECDms, NextHit, NewENextHit, NewNextHit),
 	tick(EUnit, Unit, EUnitLeft, NewUnitLeft, NewENextHit, NewNextHit, EDamagedUnit, NewDamageUnit, R).
 
 %% Both units can hit
@@ -437,7 +659,9 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 	defend(Damage, EUnit, EDamagedUnit, EUnitLeft, NewEDamageUnit, NewEUnitLeft),
 	prop(EUnit, coolDown, ECD),
 	prop(Unit, coolDown, CD),
-	goToNextAttack(ECD,CD,NewENextHit,NewNextHit),
+	ECDms is ECD / 0.01,
+	CDms is CD / 0.01,
+	goToNextAttack(ECDms,CDms,NewENextHit,NewNextHit),
 	tick(EUnit, Unit, NewEUnitLeft, NewUnitLeft, NewENextHit, NewNextHit, NewEDamageUnit, NewDamageUnit, R).
 
 
@@ -496,6 +720,7 @@ tick(EUnit, Unit, EUnitLeft, UnitLeft, 0, 0, EDamagedUnit, DamagedUnit, R) :-
 availableUnit(Unit, MinAvailable, GasAvailable, Res) :- buildUnits(Unit, MinAvailable, GasAvailable, N), N>0, Res is 1.
 
 % Builds a list of units that are available to make from the input list
+%% Example availableUnits(500,0,[zealot,immortal,probe,colossus,stalker],[],R). gives R = [probe, zealot]
 availableUnits(_, _, [], L, L).
 availableUnits(MinAvailable, GasAvailable, [H|T], Acc, Result) :- availableUnit(H, MinAvailable, GasAvailable, 1) -> availableUnits(MinAvailable, GasAvailable, T, [H|Acc], Result); availableUnits(MinAvailable,GasAvailable,T,Acc,Result).
 
@@ -505,42 +730,82 @@ filterUserUnit(Race, MinAvailable, GasAvailable, Result) :- inspectRace(Race,Lis
 
 % Reverse the order back.
 filterUserUnitInOrder(Race, MinAvailable, GasAvailable, OrderedResult) :-
-filterUserUnit(Race, MinAvailable, GasAvailable, Result), reverse(Result, OrderedResult).
+	filterUserUnit(Race, MinAvailable, GasAvailable, Result),
+	reverse(Result, OrderedResult).
 
+
+% No longer use the TotalHPleft
+%
 % Calculate the mineral spent; lower the number, more efficient the
 % unit is.
-mineralSpent(Unit,TotalHPleft, MineralSpent) :-
+mineralSpent(Unit,UnitsLeft, MineralSpent) :-
 	prop(Unit,mineral, MinCost),
-	prop(Unit,hp,UnitHP),
-	prop(Unit,shield,UnitShield),
-	UnitsLeft = ceiling(TotalHPleft/(UnitHP+UnitShield)),
 	MineralSpent is UnitsLeft*MinCost.
 
 
 % Calculate the gas spent; lower the number, more efficient the
 % unit is.
-gasSpent(Unit,TotalHPleft, GasSpent) :-
+gasSpent(Unit,UnitsLeft, GasSpent) :-
 	prop(Unit, gas, GasCost),
-	prop(Unit,hp,UnitHP),
-	prop(Unit,shield,UnitShield),
-	UnitsLeft = ceiling(TotalHPleft/(UnitHP+UnitShield)),
 	GasSpent is UnitsLeft*GasCost.
 
 % Calculate the resource spent; lower the number, more efficient the
 % unit is.
-resourceSpent(Unit, GasToMin, TotalHPleft, ResourceSpent) :-
-        prop(Unit,mineral, MinCost),
+resourceSpent(Unit, GasToMin, UnitsLeft, ResourceSpent) :-
+	prop(Unit,mineral, MinCost),
 	prop(Unit,gas,GasCost),
 	UnitCost = MinCost+GasCost*GasToMin,
-	prop(Unit,hp,UnitHP),
-	prop(Unit,shield,UnitShield),
-	UnitsLeft = ceiling(TotalHPleft/(UnitHP+UnitShield)),
 	ResourceSpent is UnitsLeft*UnitCost.
+
+% Calculate the resource spent, returning the Mineral and Gas spent
+% separate.
+resourceSpent2(Unit, GasToMin, UnitsLeft, MineralSpent, GasSpent, ResourceSpent) :-
+	prop(Unit, mineral, MinCost),
+	prop(Unit,gas,GasCost),
+	UnitCost = MinCost+GasCost*GasToMin,
+	MineralSpent is UnitsLeft*MinCost,
+	GasSpent is UnitsLeft*GasCost,
+	ResourceSpent is UnitsLeft*UnitCost.
+
+% Calculate the resources left, after the battle
+resourceLeft(Unit, GasToMin, UnitsLeft, MinAv, MinLeft, GasAv, GasLeft, ResourceLeft) :-
+	prop(Unit, mineral, MinCost),
+	prop(Unit,gas,GasCost),
+	UnitCost is MinCost+GasCost*GasToMin,
+	ResourceAv is MinAv+GasAv*GasToMin,
+	MineralSpent is UnitsLeft*MinCost,
+	GasSpent is UnitsLeft*GasCost,
+	ResourceSpent is UnitsLeft*UnitCost,
+	MinLeft is MinAv-MineralSpent,
+	GasLeft is GasAv-GasSpent,
+	ResourceLeft is ResourceAv-ResourceSpent.
+
+% Return the cost efficiency of the unit.
+costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, (Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft)) :-
+	prop(Unit, mineral, MinCost),
+	prop(Unit,gas,GasCost),
+	UnitCost = MinCost+GasCost*GasToMin,
+	ResourceAv = MinAv+GasAv*GasToMin,
+	MineralSpent is UnitsLeft*MinCost,
+	GasSpent is UnitsLeft*GasCost,
+	ResourceSpent is UnitsLeft*UnitCost,
+	buildUnits(Unit,MinAv,GasAv,N),
+	MinLeft is MinAv-(N*MinCost-MineralSpent),
+	GasLeft is GasAv-(N*GasCost-GasSpent),
+	ResourceLeft is ResourceAv-((N*MinCost+N*GasCost*GasToMin)-ResourceSpent).
+
+% Return the list of all units' cost efficiency
+costEfficiencyList([],_,_,_,[]).
+costEfficiencyList([(Unit,UnitsLeft)|T],MinAv,GasAv,GasToMin,[R1|R]) :-
+	costEfficiency(Unit, GasToMin, UnitsLeft, MinAv, GasAv, R1),
+	costEfficiencyList(T,MinAv,GasAv,GasToMin,R).
+
 
 % find the most cost efficient unit
 min([],X,X,_,_).
-min([H|T],M,X,GasToMin,TotalHPLeft) :-
-resourceSpent(H,GasToMin,TotalHPLeft, Unit1Cost),
-resourceSpent(M,GasToMin,TotalHPLeft, Unit2Cost),
-Unit1Cost =< Unit2Cost -> min(T,H,X,GasToMin,TotalHPLeft);min(T,M,X,GasToMin,TotalHPLeft).
-costEfficientUnit([H|T],Unit,GasToMin,TotalHPLeft) :- min(T,H,Unit,GasToMin,TotalHPLeft).
+min([H|T],M,X,GasToMin,UnitsLeft) :-
+resourceSpent(H,GasToMin,UnitsLeft, Unit1Cost),
+resourceSpent(M,GasToMin,UnitsLeft, Unit2Cost),
+Unit1Cost =< Unit2Cost -> min(T,H,X,GasToMin,UnitsLeft);min(T,M,X,GasToMin,UnitsLeft).
+costEfficientUnit([H|T],Unit,GasToMin,UnitsLeft) :- min(T,H,Unit,GasToMin,UnitsLeft).
+

@@ -1,0 +1,6 @@
+Some test cases
+
+main(zealot,5,500,100,zerg,3).
+main(hydralisk,5,3000,3000,terran,3).
+main(hydralisk,5,600,600,terran,3).
+main(marine,5,432,56,protoss,3).

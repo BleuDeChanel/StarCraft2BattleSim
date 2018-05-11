@@ -655,12 +655,13 @@ merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
       [(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T]):-
 	EUnitsLeft \= 0,
 	EUnitsLeft2 \= 0,
-	ResourceLeft =< ResourceLeft2,
+	ResourceLeft > ResourceLeft2,
 	merge(T1,[(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],T).
 merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],
       [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T2],
       [(Unit2,MinLeft2,GasLeft2,ResourceLeft2,UnitsLeft2,EUnitsLeft2)|T]):-
 	EUnitsLeft \= 0,
 	EUnitsLeft2 \= 0,
-	ResourceLeft > ResourceLeft2,
+	ResourceLeft =< ResourceLeft2,
+
 	merge([(Unit,MinLeft,GasLeft,ResourceLeft,UnitsLeft,EUnitsLeft)|T1],T2,T).

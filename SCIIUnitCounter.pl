@@ -609,7 +609,7 @@ costEfficiencyList2([(Unit,UnitsLeft,EUnitsLeft)|T],MinAv,GasAv,GasToMin,[R1|R])
 	costEfficiencyList2(T,MinAv,GasAv,GasToMin,R).
 
 % Perform a merge sort to sort the most cost efficient units in order
-divide(L,A,B):-halve(L,[],A,B).
+divide(L,A,B):- halve(L,[],A,B).
 halve(L,L,[],L).      % for lists of even length
 halve(L,[_|L],[],L).  % for lists of odd length
 halve([H|T],Acc,[H|L],B):-halve(T,[_|Acc],L,B).
